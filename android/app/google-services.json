@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "771271851509",
+    "project_id": "oneshield-5b406",
+    "storage_bucket": "oneshield-5b406.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:771271851509:android:3573e13ae7c4d7293d74bc",
+        "android_client_info": {
+          "package_name": "com.example.railways"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "771271851509-di423eni07o0663aegtm727gm67o5q4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjs0BuGjynjsziha7R1KgAs5XVVdrHz5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "771271851509-di423eni07o0663aegtm727gm67o5q4s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

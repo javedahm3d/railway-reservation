@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>771271851509-biv6f6aeoueat1ipckrriarceo5ogpei.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.771271851509-biv6f6aeoueat1ipckrriarceo5ogpei</string>
+	<key>API_KEY</key>
+	<string>AIzaSyApHJyZ6eBF0YtrSISoiCxZ8yPzsAA3bEs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>771271851509</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.railways</string>
+	<key>PROJECT_ID</key>
+	<string>oneshield-5b406</string>
+	<key>STORAGE_BUCKET</key>
+	<string>oneshield-5b406.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:771271851509:ios:449f896b31fae67f3d74bc</string>
+</dict>
+</plist>
