@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:railways/cards/train_list_info_card.dart';
 
 class TrainListCard extends StatefulWidget {
   final snap;
@@ -13,16 +14,17 @@ class _TrainListCardState extends State<TrainListCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+      padding:
+          EdgeInsets.symmetric(horizontal: 100, vertical: 2).copyWith(top: 5),
       child: Card(
         child: Container(
           width: double.infinity,
-          height: 150,
+          height: 160,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
           ),
-          child: Row(
+          child: Column(
             children: [
               Padding(
                 padding:
@@ -68,13 +70,54 @@ class _TrainListCardState extends State<TrainListCard> {
               ),
 
               Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                        'Number Of Seats Available:  ${widget.snap['available seats'].toString()}'),
-                    Text('fair :  ₹${widget.snap['fair'].toString()}'),
+                    trainListInfoCard('Number Of Seats Available',
+                        widget.snap['available seats']),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    trainListInfoCard('fair', widget.snap['fair']),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: InkWell(
+                        onTap: () {},
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Container(
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.orangeAccent,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(child: Text('view Route')),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30, left: 5),
+                      child: InkWell(
+                        onTap: () {},
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Container(
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(child: Text('Book Ticket')),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               )

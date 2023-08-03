@@ -113,6 +113,7 @@ class _TrainListPageState extends State<TrainListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(221, 209, 225, 238),
       appBar: MyAppBar(),
       body: Column(
         children: [
@@ -121,7 +122,7 @@ class _TrainListPageState extends State<TrainListPage> {
             child: Center(
               child: Card(
                 child: Container(
-                  width: 1300,
+                  width: 1350,
                   height: 80,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -229,6 +230,12 @@ class _TrainListPageState extends State<TrainListPage> {
                       itemBuilder: (context, index) {
                         return TrainListCard(
                             snap: snapshot.data!.docs[index].data());
+
+                        // return Container(
+                        //   color: Colors.black,
+                        //   width: 300,
+                        //   height: 100,
+                        // );
                       });
                 }),
           ),
