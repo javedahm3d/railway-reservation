@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:railways/cards/train_card.dart';
+import 'package:railways/components/my_appbar.dart';
+import 'package:railways/pages/train_list_page.dart';
 
 import '../services/station_suggestion.dart';
 
@@ -123,8 +125,9 @@ class _HomePageState extends State<HomePage> {
         optionName,
         style: TextStyle(
             fontSize: 20,
-            color:
-                selectedSearchOption == menuindex ? Colors.black : Colors.white,
+            color: selectedSearchOption == menuindex
+                ? Colors.blue
+                : Colors.grey.shade600,
             fontWeight: FontWeight.w600),
       ),
     );
@@ -143,71 +146,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 197, 219, 237),
       //appbar
-      appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            //app logo
-            Icon(
-              Icons.train,
-              size: 40,
-              color: Colors.orange,
-            ),
-
-            Text(
-              'EasyRail',
-              style: GoogleFonts.aBeeZee(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: Colors.black),
-            ),
-          ],
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Center(
-              child: InkWell(
-                onTap: () {},
-                child: Text('my bookings',
-                    style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Colors.black)),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Center(
-              child: InkWell(
-                onTap: () async {
-                  await FirebaseAuth.instance.signOut();
-                },
-                child: Text('logout',
-                    style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Colors.black)),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Center(
-              child: InkWell(
-                onTap: () {},
-                child: Text('admin login',
-                    style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: Colors.black)),
-              ),
-            ),
-          )
-        ],
-      ),
+      appBar: MyAppBar(),
 
       //body
       body: Column(
@@ -228,7 +167,7 @@ class _HomePageState extends State<HomePage> {
 
               //upper body content
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 30),
                   Text(
@@ -243,82 +182,114 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   //inner white box
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    decoration: BoxDecoration(
-                        color: Colors.orangeAccent,
-                        borderRadius: BorderRadius.circular(20)),
+                  Card(
+                    child: Container(
+                      width: 1300,
+                      height: 180,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
 
-                    //train search options ------------------------------------------------------------------------
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //train search options ------------------------------------------------------------------------
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SearchMenuOption('Search By Staions', 1),
+                                SearchMenuOption('Search By Train Name', 2),
+                                SearchMenuOption('Search By Train Id', 3),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 2),
+                            child: Divider(
+                              color: Colors.white,
+                            ),
+                          ),
+                          Row(
                             children: [
-                              SearchMenuOption('Search By Staions', 1),
-                              SearchMenuOption('Search By Train Name', 2),
-                              SearchMenuOption('Search By Train Id', 3),
+                              SizedBox(
+                                width: 30,
+                              ),
+
+                              //typeaheadfield for from station
+                              myTextAheadField('Enter From Station', true),
+
+                              //arrow icon inbetween stations
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                ),
+                              ),
+
+                              //typeaheadfield for from station
+                              myTextAheadField('Enter To Station', false),
+
+                              SizedBox(
+                                width: 20,
+                              ),
+
+                              // calendar to select date
+                              MaterialButton(
+                                onPressed: _showDatePicker,
+                                child: Container(
+                                    width: 170,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.lightBlue.shade300,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.calendar,
+                                          color: Colors.white,
+                                          weight: 100,
+                                          size: 50,
+                                        )
+                                      ],
+                                    )),
+                              ),
+                              Spacer(),
+
+                              Padding(
+                                padding: const EdgeInsets.only(right: 110),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => TrainListPage(),
+                                    ));
+                                  },
+                                  child: Container(
+                                    width: 150,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.orange,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Center(
+                                      child: Text(
+                                        'Search',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
                             ],
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 2),
-                          child: Divider(
-                            color: Colors.white,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 30,
-                            ),
-
-                            //typeaheadfield for from station
-                            myTextAheadField('Enter From Station', true),
-
-                            //arrow icon inbetween stations
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Icon(
-                                Icons.arrow_forward,
-                              ),
-                            ),
-
-                            //typeaheadfield for from station
-                            myTextAheadField('Enter To Station', false),
-
-                            SizedBox(
-                              width: 20,
-                            ),
-
-                            // calendar to select date
-                            MaterialButton(
-                              onPressed: _showDatePicker,
-                              child: Container(
-                                  width: 170,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Colors.lightBlue.shade300,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        CupertinoIcons.calendar,
-                                        color: Colors.white,
-                                        weight: 100,
-                                        size: 50,
-                                      )
-                                    ],
-                                  )),
-                            )
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   )
                 ],
@@ -330,11 +301,12 @@ class _HomePageState extends State<HomePage> {
             height: 40,
             color: Colors.grey,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Copyright reserved by @ EasyRail.com',
-                  style: TextStyle(color: Colors.white),
-                )
+                  'Copyright reserved by @ EasyRail.com  2023',
+                  style: TextStyle(color: Colors.black),
+                ),
               ],
             ),
           )
