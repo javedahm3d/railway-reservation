@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:railways/cards/train_card.dart';
 
 import '../services/station_suggestion.dart';
 
@@ -140,16 +141,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 197, 219, 237),
       //appbar
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue.shade100,
+        toolbarHeight: 80,
+        backgroundColor: Colors.white,
         title: Row(
           children: [
             //app logo
             Icon(
               Icons.train,
-              size: 30,
-              color: Colors.black,
+              size: 40,
+              color: Colors.orange,
             ),
 
             Text(
@@ -210,142 +213,155 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           //upper body part
-          Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.45,
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.837,
 
-            //background taj image
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(
-                      'lib/images/train_bg.jpg',
-                    ),
-                    fit: BoxFit.fitWidth)),
+              //background taj image
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                        'lib/images/train_bg.jpg',
+                      ),
+                      fit: BoxFit.fitWidth)),
 
-            //upper body content
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: 30),
-                Text(
-                  'Easy Train Ticket Booking',
-                  style: TextStyle(
-                      fontSize: 70,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
+              //upper body content
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 30),
+                  Text(
+                    'Easy Train Ticket Booking',
+                    style: TextStyle(
+                        fontSize: 70,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
 
-                //inner white box
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  decoration: BoxDecoration(
-                      color: Colors.orangeAccent,
-                      borderRadius: BorderRadius.circular(20)),
+                  //inner white box
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    decoration: BoxDecoration(
+                        color: Colors.orangeAccent,
+                        borderRadius: BorderRadius.circular(20)),
 
-                  //train search options ------------------------------------------------------------------------
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    //train search options ------------------------------------------------------------------------
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              SearchMenuOption('Search By Staions', 1),
+                              SearchMenuOption('Search By Train Name', 2),
+                              SearchMenuOption('Search By Train Id', 3),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 2),
+                          child: Divider(
+                            color: Colors.white,
+                          ),
+                        ),
+                        Row(
                           children: [
-                            SearchMenuOption('Search By Staions', 1),
-                            SearchMenuOption('Search By Train Name', 2),
-                            SearchMenuOption('Search By Train Id', 3),
+                            SizedBox(
+                              width: 30,
+                            ),
+
+                            //typeaheadfield for from station
+                            myTextAheadField('Enter From Station', true),
+
+                            //arrow icon inbetween stations
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Icon(
+                                Icons.arrow_forward,
+                              ),
+                            ),
+
+                            //typeaheadfield for from station
+                            myTextAheadField('Enter To Station', false),
+
+                            SizedBox(
+                              width: 20,
+                            ),
+
+                            // calendar to select date
+                            MaterialButton(
+                              onPressed: _showDatePicker,
+                              child: Container(
+                                  width: 170,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.lightBlue.shade300,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.calendar,
+                                        color: Colors.white,
+                                        weight: 100,
+                                        size: 50,
+                                      )
+                                    ],
+                                  )),
+                            )
                           ],
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 2),
-                        child: Divider(
-                          color: Colors.white,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 30,
-                          ),
-
-//typeaheadfield for from station
-                          myTextAheadField('Enter From Station', true),
-
-//arrow icon inbetween stations
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Icon(
-                              Icons.arrow_forward,
-                            ),
-                          ),
-
-//typeaheadfield for from station
-                          myTextAheadField('Enter To Station', false),
-
-                          SizedBox(
-                            width: 20,
-                          ),
-
-// calendar to select date
-                          MaterialButton(
-                            onPressed: _showDatePicker,
-                            child: Container(
-                                width: 170,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    color: Colors.lightBlue.shade300,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.calendar,
-                                      color: Colors.white,
-                                      weight: 100,
-                                      size: 50,
-                                    )
-                                  ],
-                                )),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 40,
+            color: Colors.grey,
+            child: Row(
+              children: [
+                Text(
+                  'Copyright reserved by @ EasyRail.com',
+                  style: TextStyle(color: Colors.white),
                 )
               ],
             ),
-          ),
+          )
 
-          Expanded(
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('trains')
-                    // .where('name', isGreaterThanOrEqualTo: _searchController.text)
-                    .snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  print(snapshot);
-                  return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: 300,
-                          height: 100,
-                          color: Colors.black,
-                        );
-                      });
-                }),
-          ),
+          // Expanded(
+          //   child: StreamBuilder(
+          //       stream: FirebaseFirestore.instance
+          //           .collection('trains')
+          //           // .where('name', isGreaterThanOrEqualTo: _searchController.text)
+          //           .snapshots(),
+          //       builder: (context,
+          //           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+          //               snapshot) {
+          //         if (snapshot.connectionState == ConnectionState.waiting) {
+          //           return const Center(
+          //             child: CircularProgressIndicator(),
+          //           );
+          //         }
+          //         print(snapshot);
+          //         return ListView.builder(
+          //             itemCount: snapshot.data!.docs.length,
+          //             itemBuilder: (context, index) {
+          //               return TrainListCard(
+          //                   snap: snapshot.data!.docs[index].data());
+          //             });
+          //       }),
+          // ),
         ],
       ),
     );
