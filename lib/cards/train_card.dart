@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:railways/cards/train_list_info_card.dart';
+import 'package:railways/pages/add_passenger_and_contatc_details.dart';
+import 'package:railways/pages/view_route.dart';
 
 class TrainListCard extends StatefulWidget {
   final snap;
@@ -17,6 +19,7 @@ class _TrainListCardState extends State<TrainListCard> {
       padding:
           EdgeInsets.symmetric(horizontal: 100, vertical: 2).copyWith(top: 5),
       child: Card(
+        elevation: 2,
         child: Container(
           width: double.infinity,
           height: 160,
@@ -42,32 +45,52 @@ class _TrainListCardState extends State<TrainListCard> {
                           TextStyle(fontWeight: FontWeight.w200, fontSize: 15),
                     ),
                     Spacer(),
-                    Text(widget.snap['station times'][0]),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Icon(CupertinoIcons.forward),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(widget.snap['station times'][0]),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 40),
+                              child: Icon(CupertinoIcons.arrow_right),
+                            ),
+                            Text(widget.snap['station times']
+                                [widget.snap['station times'].length - 1])
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              widget.snap['stations'][0],
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 25),
+                              child: Icon(
+                                CupertinoIcons.tram_fill,
+                                size: 15,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 25),
+                              child: Text(
+                                  '${widget.snap['distance'][widget.snap['distance'].length - 1] - widget.snap['distance'][0]} km'),
+                            ),
+                            Text(
+                                widget.snap['stations']
+                                    [widget.snap['stations'].length - 1],
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        )
+                      ],
                     ),
-                    Text(widget.snap['station times']
-                        [widget.snap['station times'].length - 1])
                   ],
                 ),
               ),
 
               //start and end stations
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(widget.snap['stations'][0]),
-                  SizedBox(
-                    width: 100,
-                  ),
-                  Text(widget.snap['stations']
-                      [widget.snap['stations'].length - 1]),
-                  SizedBox(
-                    width: 35,
-                  )
-                ],
-              ),
 
               Padding(
                 padding:
@@ -76,16 +99,23 @@ class _TrainListCardState extends State<TrainListCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     trainListInfoCard('Number Of Seats Available',
-                        widget.snap['available seats']),
+                        widget.snap['available seats'].toString()),
                     SizedBox(
                       width: 50,
                     ),
-                    trainListInfoCard('fair', widget.snap['fair']),
+                    trainListInfoCard('fair', '₹${widget.snap['fair']}'),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(top: 30),
+
+                      // view route button
+
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ViewTrainRoute(),
+                          ));
+                        },
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
@@ -100,10 +130,18 @@ class _TrainListCardState extends State<TrainListCard> {
                         ),
                       ),
                     ),
+
+                    // book train button
+
                     Padding(
                       padding: const EdgeInsets.only(top: 30, left: 5),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                PassengerAndContactDeatilsPage(),
+                          ));
+                        },
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),

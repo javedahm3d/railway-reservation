@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:intl/intl.dart';
 import 'package:railways/components/my_appbar.dart';
 import 'package:railways/pages/homepage.dart';
 
@@ -9,22 +10,31 @@ import '../cards/train_card.dart';
 import '../services/station_suggestion.dart';
 
 class TrainListPage extends StatefulWidget {
-  const TrainListPage({super.key});
+  TextEditingController fromstationController;
+  TextEditingController tostationController;
+  DateTime date;
+  TrainListPage(
+      {super.key,
+      required this.fromstationController,
+      required this.tostationController,
+      required this.date});
 
   @override
   State<TrainListPage> createState() => _TrainListPageState();
 }
 
 class _TrainListPageState extends State<TrainListPage> {
-  TextEditingController fromController = TextEditingController();
-  TextEditingController toController = TextEditingController();
-
   _showDatePicker() {
     showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2025));
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2025))
+        .then((value) {
+      setState(() {
+        widget.date = value!;
+      });
+    });
   }
 
   myTextAheadField(String hintText, bool isFromStation) {
@@ -47,7 +57,9 @@ class _TrainListPageState extends State<TrainListPage> {
             )),
         debounceDuration: const Duration(milliseconds: 400),
         textFieldConfiguration: TextFieldConfiguration(
-            controller: isFromStation ? fromController : toController,
+            controller: isFromStation
+                ? widget.fromstationController
+                : widget.tostationController,
             decoration: InputDecoration(
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
@@ -102,8 +114,8 @@ class _TrainListPageState extends State<TrainListPage> {
         onSuggestionSelected: (String suggestion) {
           setState(() {
             isFromStation
-                ? fromController.text = suggestion
-                : toController.text = suggestion;
+                ? widget.fromstationController.text = suggestion
+                : widget.tostationController.text = suggestion;
           });
         },
       ),
@@ -168,8 +180,18 @@ class _TrainListPageState extends State<TrainListPage> {
                                     Icon(
                                       CupertinoIcons.calendar,
                                       color: Colors.white,
-                                      weight: 100,
-                                      size: 50,
+                                      weight: 70,
+                                      size: 40,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        DateFormat.MMMEd().format(widget.date),
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     )
                                   ],
                                 )),

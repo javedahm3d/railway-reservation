@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-trainListInfoCard(String title, int number) {
+trainListInfoCard(String title, String number) {
   return Card(
     child: Container(
       width: 130,
@@ -22,7 +22,7 @@ trainListInfoCard(String title, int number) {
           ),
           Spacer(),
           Center(
-              child: Text("₹${number.toString()}",
+              child: Text(number,
                   style: TextStyle(fontSize: 30, color: Colors.grey.shade700))),
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:intl/intl.dart';
 import 'package:railways/cards/train_card.dart';
 import 'package:railways/components/my_appbar.dart';
 import 'package:railways/pages/train_list_page.dart';
@@ -22,8 +23,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
+  DateTime date = DateTime.now();
   int selectedSearchOption = 0;
 
+// text ahead field function
   myTextAheadField(String hintText, bool isFromStation) {
     return SizedBox(
       height: 50,
@@ -107,6 +110,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+// search menu options
   SearchMenuOption(String optionName, int menuindex) {
     return InkWell(
       onTap: () {},
@@ -133,18 +137,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+// show date picker
+
   _showDatePicker() {
     showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2025));
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2025))
+        .then((value) {
+      setState(() {
+        date = value!;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 197, 219, 237),
       //appbar
       appBar: MyAppBar(),
 
@@ -165,30 +175,32 @@ class _HomePageState extends State<HomePage> {
                       ),
                       fit: BoxFit.fitWidth)),
 
-              //upper body content
+              //title content
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 30),
+                  SizedBox(height: 100),
                   Text(
                     'Easy Train Ticket Booking',
-                    style: TextStyle(
+                    style: GoogleFonts.outfit(
                         fontSize: 70,
                         color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 22,
                   ),
 
                   //inner white box
                   Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
                     child: Container(
                       width: 1300,
                       height: 180,
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
+                          color: Color.fromARGB(155, 209, 225, 238),
+                          borderRadius: BorderRadius.circular(30)),
 
                       //train search options ------------------------------------------------------------------------
                       child: Column(
@@ -204,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 30),
+                          SizedBox(height: 10),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 2),
@@ -212,6 +224,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                             ),
                           ),
+                          SizedBox(height: 20),
                           Row(
                             children: [
                               SizedBox(
@@ -239,6 +252,8 @@ class _HomePageState extends State<HomePage> {
 
                               // calendar to select date
                               MaterialButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
                                 onPressed: _showDatePicker,
                                 child: Container(
                                     width: 170,
@@ -252,8 +267,18 @@ class _HomePageState extends State<HomePage> {
                                         Icon(
                                           CupertinoIcons.calendar,
                                           color: Colors.white,
-                                          weight: 100,
-                                          size: 50,
+                                          weight: 70,
+                                          size: 40,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            DateFormat.MMMEd().format(date),
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         )
                                       ],
                                     )),
@@ -266,7 +291,11 @@ class _HomePageState extends State<HomePage> {
                                   onTap: () {
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
-                                      builder: (context) => TrainListPage(),
+                                      builder: (context) => TrainListPage(
+                                        fromstationController: fromController,
+                                        tostationController: toController,
+                                        date: date,
+                                      ),
                                     ));
                                   },
                                   child: Container(
@@ -299,41 +328,18 @@ class _HomePageState extends State<HomePage> {
           Container(
             width: double.infinity,
             height: 40,
-            color: Colors.grey,
+            color: Colors.grey.shade800,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Copyright reserved by @ EasyRail.com  2023',
-                  style: TextStyle(color: Colors.black),
+                  'Copyright reserved by @EasyRail.com  2023',
+                  style: TextStyle(
+                      color: Colors.grey.shade600, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
           )
-
-          // Expanded(
-          //   child: StreamBuilder(
-          //       stream: FirebaseFirestore.instance
-          //           .collection('trains')
-          //           // .where('name', isGreaterThanOrEqualTo: _searchController.text)
-          //           .snapshots(),
-          //       builder: (context,
-          //           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-          //               snapshot) {
-          //         if (snapshot.connectionState == ConnectionState.waiting) {
-          //           return const Center(
-          //             child: CircularProgressIndicator(),
-          //           );
-          //         }
-          //         print(snapshot);
-          //         return ListView.builder(
-          //             itemCount: snapshot.data!.docs.length,
-          //             itemBuilder: (context, index) {
-          //               return TrainListCard(
-          //                   snap: snapshot.data!.docs[index].data());
-          //             });
-          //       }),
-          // ),
         ],
       ),
     );
