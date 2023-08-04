@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ScheduleDetailsPage extends StatefulWidget {
+class PassengerAndContactDeatilsPage extends StatefulWidget {
   @override
-  _ScheduleDetailsPageState createState() => _ScheduleDetailsPageState();
+  _PassengerAndContactDeatilsPageState createState() =>
+      _PassengerAndContactDeatilsPageState();
 }
 
-class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
+class _PassengerAndContactDeatilsPageState
+    extends State<PassengerAndContactDeatilsPage> {
   int scheduleId = 0;
   String trainId = '';
   List<String> passengerList = [];
