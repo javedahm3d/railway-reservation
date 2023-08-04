@@ -1,18 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:railways/cards/train_list_info_card.dart';
 import 'package:railways/pages/add_passenger_and_contatc_details.dart';
 import 'package:railways/pages/view_route.dart';
 
 class TrainListCard extends StatefulWidget {
   final snap;
-  const TrainListCard({super.key, required this.snap});
+  final int fromIndex;
+  final int toIndex;
+  const TrainListCard(
+      {super.key,
+      required this.snap,
+      required this.fromIndex,
+      required this.toIndex});
 
   @override
   State<TrainListCard> createState() => _TrainListCardState();
 }
 
 class _TrainListCardState extends State<TrainListCard> {
+  // int distance = 0;
+  // int fair = 0;
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   distance = widget.snap['distance'][widget.toIndex] -
+  //       widget.snap['distance'][widget.fromIndex];
+  //   fair = distance * int.parse(widget.snap['fair']);
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -50,37 +69,40 @@ class _TrainListCardState extends State<TrainListCard> {
                       children: [
                         Row(
                           children: [
-                            Text(widget.snap['station times'][0]),
+                            Text(DateFormat('MMM d, h:mm a').format(widget
+                                .snap['station times'][widget.fromIndex]
+                                .toDate())),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 40),
                               child: Icon(CupertinoIcons.arrow_right),
                             ),
-                            Text(widget.snap['station times']
-                                [widget.snap['station times'].length - 1])
+                            Text(DateFormat('MMM d, h:mm a').format(widget
+                                .snap['station times'][widget.toIndex]
+                                .toDate()))
                           ],
                         ),
                         Row(
                           children: [
                             Text(
-                              widget.snap['stations'][0],
+                              widget.snap['stations'][widget.fromIndex],
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 25),
+                              padding: const EdgeInsets.only(left: 65),
                               child: Icon(
                                 CupertinoIcons.tram_fill,
                                 size: 15,
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(right: 25),
+                              padding: const EdgeInsets.only(right: 65),
                               child: Text(
-                                  '${widget.snap['distance'][widget.snap['distance'].length - 1] - widget.snap['distance'][0]} km'),
+                                  '${widget.snap['distance'][widget.toIndex] - widget.snap['distance'][widget.fromIndex]} km'
+                                  // '$distance km'
+                                  ),
                             ),
-                            Text(
-                                widget.snap['stations']
-                                    [widget.snap['stations'].length - 1],
+                            Text(widget.snap['stations'][widget.toIndex],
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                           ],
                         )
@@ -103,7 +125,8 @@ class _TrainListCardState extends State<TrainListCard> {
                     SizedBox(
                       width: 50,
                     ),
-                    trainListInfoCard('fair', '₹${widget.snap['fair']}'),
+                    trainListInfoCard('fair',
+                        '₹${widget.snap['fair'] * (widget.snap['distance'][widget.toIndex] - widget.snap['distance'][widget.fromIndex])}'),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(top: 30),

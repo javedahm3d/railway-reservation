@@ -234,7 +234,7 @@ class _TrainListPageState extends State<TrainListPage> {
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('trains')
-                    // .where('name', isGreaterThanOrEqualTo: _searchController.text)
+                    .where('start time', isGreaterThanOrEqualTo: widget.date)
                     .snapshots(),
                 builder: (context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -244,14 +244,39 @@ class _TrainListPageState extends State<TrainListPage> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  print(
-                      '------------------------------------------------------');
-                  // print(snapshot.data!.docs[0].data()['name']);
+
                   return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                        return TrainListCard(
-                            snap: snapshot.data!.docs[index].data());
+                        var data = snapshot.data!.docs[index].data();
+
+                        if (data['stations']
+                                .contains(widget.fromstationController.text) &&
+                            data['stations']
+                                .contains(widget.tostationController.text) &&
+                            (data['stations'].indexOf(
+                                    widget.fromstationController.text) <
+                                data['stations'].indexOf(
+                                    widget.tostationController.text))) {
+                          return TrainListCard(
+                            snap: snapshot.data!.docs[index].data(),
+                            toIndex: data['stations']
+                                .indexOf(widget.tostationController.text),
+                            fromIndex: data['stations']
+                                .indexOf(widget.fromstationController.text),
+                          );
+                        } else if (widget.tostationController.text.isEmpty &&
+                            widget.fromstationController.text.isEmpty) {
+                          return TrainListCard(
+                            snap: snapshot.data!.docs[index].data(),
+                            toIndex: data['stations']
+                                .indexOf(widget.tostationController.text),
+                            fromIndex: data['stations']
+                                .indexOf(widget.fromstationController.text),
+                          );
+                        } else {
+                          return Text('no trains found');
+                        }
 
                         // return Container(
                         //   color: Colors.black,
