@@ -7,7 +7,10 @@ class GetStations {
     'mumbai',
     "ahemdabad",
     'jaipur',
-    'delhi'
+    'delhi',
+    'vasco',
+    'dharwar',
+    'banglore'
   ];
 
   List<String> getSuggestions(String query) {

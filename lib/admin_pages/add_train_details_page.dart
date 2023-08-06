@@ -16,15 +16,15 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
   int numberOfSeatsPercoache = 0;
   double fair = 0;
   List<int> seatsAvailable = [];
-  List<List<int>> seatMatrix = [];
+  List<int> allSeatsList = [];
   List<String> stationList = [];
-  List<String> distanceList = [];
+  List<int> distanceList = [];
   List<DateTime?> timestampStation = [];
 
   void _addStation() {
     setState(() {
       stationList.add('');
-      distanceList.add('');
+      distanceList.add(0);
       timestampStation.add(null);
     });
   }
@@ -64,39 +64,6 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
         });
       }
     }
-  }
-
-  addTrainDetailsOnFirestore() {
-    for (int i = 0; i < stationList.length; i++) {
-      seatsAvailable.add(numberOfSeatsPercoache * numberOfcoaches);
-    }
-
-    print(seatsAvailable);
-
-    for (int i = 0; i < numberOfcoaches; i++) {
-      List<int> row = [];
-      for (int j = 0; j < numberOfSeatsPercoache; j++) {
-        row.add(j + 1);
-      }
-      seatMatrix.add(row);
-    }
-
-    print(seatMatrix);
-
-    FirebaseFirestore.instance.collection('trains').doc(trainId).set({
-      "trainName": trainName,
-      "trainId": trainId,
-      'fair': fair,
-      "stations": stationList,
-      "distance": distanceList,
-      'start time': timestampStation[0],
-      "station times": timestampStation,
-      'coaches': numberOfcoaches,
-      'seats per couche': numberOfSeatsPercoache,
-      'seats available': seatsAvailable,
-      'seatMatrix': seatMatrix,
-      'iteration': 0,
-    });
   }
 
   @override
@@ -218,9 +185,6 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                       width: 400,
                       child: TextField(
                         keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
                         decoration: InputDecoration(labelText: 'price per km'),
                         onChanged: (value) {
                           setState(() {
@@ -296,7 +260,7 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                                   InputDecoration(labelText: 'Distance'),
                               onChanged: (value) {
                                 setState(() {
-                                  distanceList[index] = value;
+                                  distanceList[index] = int.parse(value);
                                 });
                               },
                             ),
@@ -327,8 +291,42 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
 
             SizedBox(height: 30),
             InkWell(
-              onTap: () {
-                addTrainDetailsOnFirestore();
+              onTap: () async {
+//adding train logic
+
+                for (int i = 0; i < stationList.length; i++) {
+                  seatsAvailable.add(numberOfSeatsPercoache * numberOfcoaches);
+                }
+
+                print(seatsAvailable);
+
+                for (int i = 0; i < numberOfcoaches; i++) {
+                  allSeatsList.add(i);
+                }
+
+                try {
+                  await FirebaseFirestore.instance
+                      .collection('trains')
+                      .doc(trainId)
+                      .set({
+                    "name": trainName,
+                    "id": trainId,
+                    'fair': fair,
+                    "stations": stationList,
+                    "distance": distanceList,
+                    'start time': timestampStation[0],
+                    "station times": timestampStation,
+                    'coaches': numberOfcoaches,
+                    'seats per couche': numberOfSeatsPercoache,
+                    'seats available': seatsAvailable,
+                    'seatMatrix': seatMatrix,
+                    'iteration': 0,
+                  });
+                } on FirebaseException catch (e) {
+                  print(e);
+                }
+
+                print('submitted');
 
                 showDialog(
                   context: context,
@@ -368,53 +366,6 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildStationRow(int index) {
-    final selectedDateTime = timestampStation[index];
-
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(labelText: 'Station ${index + 1}'),
-            onChanged: (value) {
-              setState(() {
-                stationList[index] = value;
-              });
-            },
-          ),
-        ),
-        SizedBox(width: 16),
-        Expanded(
-          child: InkWell(
-            onTap: () => _selectDateTime(index),
-            child: InputDecorator(
-              decoration: InputDecoration(
-                labelText: 'Time at Station',
-              ),
-              child: Text(
-                selectedDateTime != null
-                    ? '${selectedDateTime.toLocal()}'
-                    : 'Select Time', // Provide a placeholder text if no time is selected.
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(width: 16),
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(labelText: 'Distance'),
-            onChanged: (value) {
-              setState(() {
-                distanceList[index] = value;
-              });
-            },
-          ),
-        ),
-      ],
     );
   }
 }
