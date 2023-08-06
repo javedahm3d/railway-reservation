@@ -5,20 +5,21 @@ class MyButton extends StatelessWidget {
   final String text;
   final Color color;
 
-  const MyButton(
-      {super.key,
-      required this.onTap,
-      required this.text,
-      this.color = Colors.black, 
-      });
+  const MyButton({
+    super.key,
+    required this.onTap,
+    required this.text,
+    this.color = Colors.black,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      mouseCursor: SystemMouseCursors.click,
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(25),
-        margin: const EdgeInsets.symmetric(horizontal: 25),
+        margin: const EdgeInsets.symmetric(horizontal: 40),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(8),

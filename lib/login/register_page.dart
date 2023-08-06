@@ -100,7 +100,11 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            color: Colors.orangeAccent,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('lib/images/train_bg.jpg'),
+                    fit: BoxFit.cover)),
+            // color: Colors.orangeAccent,
             child: Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.4,
@@ -257,7 +261,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                         const SizedBox(width: 4),
-                        GestureDetector(
+                        InkWell(
+                          mouseCursor: SystemMouseCursors.click,
                           onTap: widget.onTap,
                           child: const Text(
                             'Login now',

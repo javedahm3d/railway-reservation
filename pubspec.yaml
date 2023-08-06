@@ -43,6 +43,7 @@ dependencies:
   google_fonts: ^4.0.4
   flutter_typeahead: ^4.6.2
   intl: ^0.18.1
+  email_validator: ^2.1.17
 
 dev_dependencies:
   flutter_test:

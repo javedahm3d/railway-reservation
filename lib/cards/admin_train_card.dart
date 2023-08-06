@@ -5,21 +5,20 @@ import 'package:railways/cards/train_list_info_card.dart';
 import 'package:railways/pages/add_passenger_and_contatc_details.dart';
 import 'package:railways/pages/view_route.dart';
 
-class TrainListCard extends StatefulWidget {
+class AdminTrainListCard extends StatefulWidget {
   final snap;
-  final int fromIndex;
-  final int toIndex;
-  const TrainListCard(
-      {super.key,
-      required this.snap,
-      required this.fromIndex,
-      required this.toIndex});
+  final trainId;
+  const AdminTrainListCard({
+    super.key,
+    required this.snap,
+    required this.trainId,
+  });
 
   @override
-  State<TrainListCard> createState() => _TrainListCardState();
+  State<AdminTrainListCard> createState() => _AdminTrainListCardState();
 }
 
-class _TrainListCardState extends State<TrainListCard> {
+class _AdminTrainListCardState extends State<AdminTrainListCard> {
   // int distance = 0;
   // int fair = 0;
 
@@ -69,23 +68,23 @@ class _TrainListCardState extends State<TrainListCard> {
                       children: [
                         Row(
                           children: [
-                            Text(DateFormat('MMM d, h:mm a').format(widget
-                                .snap['station times'][widget.fromIndex]
-                                .toDate())),
+                            Text(DateFormat('MMM d, h:mm a').format(
+                                widget.snap['station times'][0].toDate())),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 40),
                               child: Icon(CupertinoIcons.arrow_right),
                             ),
                             Text(DateFormat('MMM d, h:mm a').format(widget
-                                .snap['station times'][widget.toIndex]
+                                .snap['station times']
+                                    [widget.snap['station times'].length - 1]
                                 .toDate()))
                           ],
                         ),
                         Row(
                           children: [
                             Text(
-                              widget.snap['stations'][widget.fromIndex],
+                              widget.snap['stations'][0],
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Padding(
@@ -98,11 +97,13 @@ class _TrainListCardState extends State<TrainListCard> {
                             Padding(
                               padding: const EdgeInsets.only(right: 65),
                               child: Text(
-                                  '${widget.snap['distance'][widget.toIndex] - widget.snap['distance'][widget.fromIndex]} km'
+                                  '${widget.snap['distance'][widget.snap['station times'].length - 1] - widget.snap['distance'][0]} km'
                                   // '$distance km'
                                   ),
                             ),
-                            Text(widget.snap['stations'][widget.toIndex],
+                            Text(
+                                widget.snap['stations']
+                                    [widget.snap['station times'].length - 1],
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                           ],
                         )
@@ -120,69 +121,45 @@ class _TrainListCardState extends State<TrainListCard> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    trainListInfoCard(
-                        'Number Of Seats Available',
-                        widget.snap['seats available'][widget.fromIndex]
-                            .toString()),
+                    trainListInfoCard('Number Of Seats Available',
+                        widget.snap['seats available'][0].toString()),
                     SizedBox(
                       width: 50,
                     ),
                     trainListInfoCard('fair',
-                        '₹${widget.snap['fair'] * (widget.snap['distance'][widget.toIndex] - widget.snap['distance'][widget.fromIndex])}'),
+                        '₹${widget.snap['fair'] * (widget.snap['distance'][widget.snap['station times'].length - 1] - widget.snap['distance'][0])}'),
 
                     SizedBox(
                       width: 50,
                     ),
-                    trainListInfoCard('Waiting List', '0'),
+                    trainListInfoCard('fair',
+                        '₹${widget.snap['fair'] * (widget.snap['distance'][widget.snap['station times'].length - 1] - widget.snap['distance'][0])}'),
 
                     Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30),
-
-                      // view route button
-
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ViewTrainRoute(),
-                          ));
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Container(
-                            height: 50,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(child: Text('view Route')),
-                          ),
-                        ),
-                      ),
-                    ),
 
                     // book train button
 
                     Padding(
                       padding: const EdgeInsets.only(top: 30, left: 5),
                       child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                PassengerAndContactDeatilsPage(),
-                          ));
-                        },
+                        onTap: () {},
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                           child: Container(
                             height: 50,
-                            width: 100,
+                            width: 140,
                             decoration: BoxDecoration(
                                 color: Colors.blue,
                                 borderRadius: BorderRadius.circular(10)),
-                            child: Center(child: Text('Book Ticket')),
+                            child: const Center(
+                                child: Text(
+                              'update details',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            )),
                           ),
                         ),
                       ),

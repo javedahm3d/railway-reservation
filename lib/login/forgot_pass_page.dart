@@ -52,55 +52,76 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey[700],
-        elevation: 0,
-        toolbarHeight: 100,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Container(
-                child: Text(
-                  "       dont worry.\nwe've got your back!",
-                  style: TextStyle(fontWeight: FontWeight.w200),
+        appBar: AppBar(
+          backgroundColor: Colors.green,
+          elevation: 0,
+          toolbarHeight: 100,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Container(
+                  child: Text(
+                    "       dont worry.\nwe've got your back!",
+                    style: TextStyle(fontWeight: FontWeight.w200, fontSize: 25),
+                  ),
                 ),
               ),
-            ),
-            Container(
-              height: 100,
-              child: Image.asset('lib/images/app_logo.png'),
-            ),
-          ],
+              Container(
+                height: 100,
+                child: Icon(
+                  Icons.train,
+                  size: 80,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-          child: SafeArea(
-              child: Center(
-        child: Column(children: [
-          const SizedBox(
-            height: 100,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Text(
-              "Enter your email id so that we can send you a link to reset your password.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+        body: Center(
+          child: Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.87,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('lib/images/train_bg.jpg'),
+                    fit: BoxFit.fitWidth)),
+            child: Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.36,
+                height: MediaQuery.of(context).size.height * 0.5,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Column(children: [
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Text(
+                      "Enter your email id so that we can send you a link to reset your password.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  MyTextField(
+                      controller: _emailController,
+                      hintText: 'email id',
+                      obscureText: false),
+                  const SizedBox(height: 30),
+                  MyButton(
+                    onTap: passwordReset,
+                    text: 'Send link',
+                    color: Colors.blue,
+                  ),
+                ]),
+              ),
             ),
           ),
-          const SizedBox(
-            height: 30,
-          ),
-          MyTextField(
-              controller: _emailController,
-              hintText: 'email id',
-              obscureText: false),
-          const SizedBox(height: 30),
-          MyButton(onTap: passwordReset, text: 'Send link'),
-        ]),
-      ))),
-    );
+        ));
   }
 }

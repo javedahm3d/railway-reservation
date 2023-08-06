@@ -1,7 +1,9 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:railways/components/my_appbar.dart';
+import 'package:railways/components/show_message.dart';
 
 class PassengerAndContactDeatilsPage extends StatefulWidget {
   @override
@@ -190,10 +192,7 @@ class _PassengerAndContactDeatilsPageState
                         TextField(
                           controller: emailController,
                           decoration: InputDecoration(labelText: 'Email Id'),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          keyboardType: TextInputType.emailAddress,
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 0)
@@ -214,7 +213,21 @@ class _PassengerAndContactDeatilsPageState
 
               //submit button
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  if (passengerList.isEmpty) {
+                    ShowMessage().showMessage(
+                        'Please add atleast one passenger', context);
+                  } else {
+                    if (emailController.text.isEmpty) {
+                      ShowMessage()
+                          .showMessage('Please enter your email id', context);
+                    }
+                    if (!EmailValidator.validate(emailController.text, true)) {
+                      ShowMessage().showMessage(
+                          'Please enter a valid email id', context);
+                    }
+                  }
+                },
                 child: Container(
                   width: 400,
                   height: 60,

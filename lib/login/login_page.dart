@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
@@ -54,21 +55,26 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[300],
       body: SingleChildScrollView(
-        child: SafeArea(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: Colors.orangeAccent,
-            child: Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.4,
-                height: MediaQuery.of(context).size.height * 0.9,
+        physics: ScrollPhysics(),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('lib/images/train_bg.jpg'),
+                  fit: BoxFit.cover)),
+          // color: Colors.orangeAccent,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.36,
+                height: MediaQuery.of(context).size.height * 0.85,
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -77,19 +83,24 @@ class _LoginPageState extends State<LoginPage> {
                     // logo
 
                     Container(
-                      width: 200,
-                      height: 200,
+                      width: 150,
+                      height: 125,
                       child: Icon(
                         Icons.train,
                         size: 150,
                       ),
                     ),
+                    Text(
+                      'EasyRail',
+                      style: GoogleFonts.abel(
+                          fontSize: 60, fontWeight: FontWeight.bold),
+                    ),
 
                     const SizedBox(height: 10),
 
-                    // welcome back, you've been missed!
+                    // Destination Awaits: Hop Aboard with Easy Train Booking!
                     Text(
-                      'Welcome back you\'ve been missed!',
+                      'Destination Awaits: Hop Aboard with Easy Train Booking!',
                       style: TextStyle(
                         color: Colors.grey[700],
                         fontSize: 16,
@@ -117,7 +128,8 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
 
                     // forgot password?
-                    GestureDetector(
+                    InkWell(
+                      mouseCursor: SystemMouseCursors.click,
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
@@ -125,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                         }));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -205,10 +217,13 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Text(
                           'Not a member?',
-                          style: TextStyle(color: Colors.grey[700]),
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                          ),
                         ),
                         const SizedBox(width: 4),
-                        GestureDetector(
+                        InkWell(
+                          mouseCursor: SystemMouseCursors.click,
                           onTap: widget.onTap,
                           child: const Text(
                             'Register now',
@@ -223,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-            ),
+            ],
           ),
         ),
       ),

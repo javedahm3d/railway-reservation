@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       //appbar
-      appBar: MyAppBar(),
+      appBar: const MyAppBar(),
 
       //body
       body: Column(
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
               height: MediaQuery.of(context).size.height * 0.837,
 
               //background taj image
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage(
                         'lib/images/train_bg.jpg',
@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 100),
+                  const SizedBox(height: 100),
                   Text(
                     'Easy Train Ticket Booking',
                     style: GoogleFonts.outfit(
@@ -187,20 +187,20 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 22,
                   ),
 
                   //inner white box
                   Card(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
+                        borderRadius: BorderRadius.circular(60)),
                     child: Container(
                       width: 1300,
                       height: 180,
                       decoration: BoxDecoration(
-                          color: Color.fromARGB(155, 209, 225, 238),
-                          borderRadius: BorderRadius.circular(30)),
+                          color: const Color.fromARGB(155, 209, 225, 238),
+                          borderRadius: BorderRadius.circular(15)),
 
                       //train search options ------------------------------------------------------------------------
                       child: Column(
@@ -216,28 +216,28 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 2),
                             child: Divider(
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: 30,
+                              const SizedBox(
+                                width: 60,
                               ),
 
                               //typeaheadfield for from station
                               myTextAheadField('Enter From Station', true),
 
                               //arrow icon inbetween stations
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
                                 child: Icon(
                                   Icons.arrow_forward,
                                 ),
@@ -246,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                               //typeaheadfield for from station
                               myTextAheadField('Enter To Station', false),
 
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
 
@@ -264,26 +264,31 @@ class _HomePageState extends State<HomePage> {
                                             BorderRadius.circular(10)),
                                     child: Row(
                                       children: [
-                                        Icon(
-                                          CupertinoIcons.calendar,
-                                          color: Colors.white,
-                                          weight: 70,
-                                          size: 40,
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 5),
+                                          child: Icon(
+                                            CupertinoIcons.calendar,
+                                            color: Colors.white,
+                                            weight: 70,
+                                            size: 40,
+                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
                                             DateFormat.MMMEd().format(date),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.white,
-                                                fontWeight: FontWeight.bold),
+                                                fontWeight: FontWeight.w400),
                                           ),
                                         )
                                       ],
                                     )),
                               ),
-                              Spacer(),
+                              const Spacer(),
+
+                              //search button
 
                               Padding(
                                 padding: const EdgeInsets.only(right: 110),
@@ -299,13 +304,13 @@ class _HomePageState extends State<HomePage> {
                                     ));
                                   },
                                   child: Container(
-                                    width: 150,
+                                    width: 170,
                                     height: 50,
                                     decoration: BoxDecoration(
                                         color: Colors.orange,
                                         borderRadius:
                                             BorderRadius.circular(10)),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
                                         'Search',
                                         style: TextStyle(
@@ -319,6 +324,19 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
+                    ),
+                  ),
+
+                  //webiste introduction
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 60, horizontal: 200),
+                    child: Text(
+                      'Welcome to Easy Rail - Your one-stop online destination for hassle-free train ticket bookings. Discover a seamless booking experience, real-time availability, and secure payments. Embark on memorable train journeys with ease, all at Easy Rail.',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.aBeeZee(
+                          fontSize: 20,
+                          color: Color.fromARGB(167, 255, 255, 255)),
                     ),
                   )
                 ],

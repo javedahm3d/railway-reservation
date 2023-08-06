@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:railways/admin_pages/admin_homepage.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppBar({super.key});
@@ -13,6 +14,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       toolbarHeight: 80,
       backgroundColor: Colors.white,
+      iconTheme: IconThemeData(color: Colors.black),
       title: Row(
         children: [
           //app logo
@@ -62,8 +64,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Center(
             child: InkWell(
-              onTap: () {},
-              child: Text('admin login',
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AdminHomePage(),
+                ));
+              },
+              child: Text('admin page',
                   style: GoogleFonts.roboto(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,

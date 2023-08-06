@@ -126,7 +126,12 @@ class _TrainListPageState extends State<TrainListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(221, 209, 225, 238),
+
+      // appbar
+
       appBar: MyAppBar(),
+
+//body
       body: Column(
         children: [
           Padding(
@@ -143,9 +148,10 @@ class _TrainListPageState extends State<TrainListPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 30,
+                            width: 60,
                           ),
 
                           //typeaheadfield for from station
@@ -205,7 +211,7 @@ class _TrainListPageState extends State<TrainListPage> {
                                 // navigator
                               },
                               child: Container(
-                                width: 150,
+                                width: 170,
                                 height: 50,
                                 decoration: BoxDecoration(
                                     color: Colors.orange,
@@ -250,7 +256,13 @@ class _TrainListPageState extends State<TrainListPage> {
                       itemBuilder: (context, index) {
                         var data = snapshot.data!.docs[index].data();
 
-                        if (data['stations']
+                        if (widget.tostationController.text.isEmpty ||
+                            widget.fromstationController.text.isEmpty) {
+// Train list card
+                          return Center(
+                            child: Text('Please select staions'),
+                          );
+                        } else if (data['stations']
                                 .contains(widget.fromstationController.text) &&
                             data['stations']
                                 .contains(widget.tostationController.text) &&
@@ -258,15 +270,8 @@ class _TrainListPageState extends State<TrainListPage> {
                                     widget.fromstationController.text) <
                                 data['stations'].indexOf(
                                     widget.tostationController.text))) {
-                          return TrainListCard(
-                            snap: snapshot.data!.docs[index].data(),
-                            toIndex: data['stations']
-                                .indexOf(widget.tostationController.text),
-                            fromIndex: data['stations']
-                                .indexOf(widget.fromstationController.text),
-                          );
-                        } else if (widget.tostationController.text.isEmpty &&
-                            widget.fromstationController.text.isEmpty) {
+                          // Train list card
+
                           return TrainListCard(
                             snap: snapshot.data!.docs[index].data(),
                             toIndex: data['stations']
@@ -275,18 +280,23 @@ class _TrainListPageState extends State<TrainListPage> {
                                 .indexOf(widget.fromstationController.text),
                           );
                         } else {
-                          return Text('no trains found');
+                          return Center(child: Text('no trains found'));
                         }
-
-                        // return Container(
-                        //   color: Colors.black,
-                        //   width: 300,
-                        //   height: 100,
-                        // );
                       });
                 }),
           ),
         ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Tech Support',
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        onPressed: () {},
+        child: Container(
+          width: 40,
+          height: 40,
+          child: Icon(CupertinoIcons.text_bubble),
+        ),
       ),
     );
   }
