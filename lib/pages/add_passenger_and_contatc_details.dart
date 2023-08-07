@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:railways/components/my_appbar.dart';
 import 'package:railways/components/show_message.dart';
-import 'package:railways/services/payment.dart';
+import 'package:railways/services/paymentAndBooking.dart';
 
 class PassengerAndContactDeatilsPage extends StatefulWidget {
   final snap;

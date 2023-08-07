@@ -282,22 +282,23 @@ class _PaymentPageState extends State<PaymentPage> {
     // for (int a = widget.fromIndex;
     //     a < widget.snap['stations'].length - 1;
     //     a++) {
-    List<List<int>> matrix = [];
+    List<List<dynamic>> matrix = [];
+    List<int> commonSeats = [];
+
+    for (int i = widget.fromIndex; i < widget.toIndex - 1; i++) {
+      matrix.add(widget.snap['station seats availablity']
+          ["${widget.snap['stations'][i]}"]);
+    }
+
+    commonSeats = getCommonSeats(matrix);
 
     for (int i = 0; i < widget.snap['coaches']; i++) {
       List<int> row = [];
-      print('$i\n');
+      // print('$i\n');
 
-      while (j <
-          widget
-              .snap['station seats availablity']
-                  ["${widget.snap['stations'][widget.fromIndex]}"]
-              .length) {
-        if (widget.snap['station seats availablity']
-                ["${widget.snap['stations'][widget.fromIndex]}"][j] <=
-            widget.snap['seats per couche'] * (i + 1)) {
-          row.add(widget.snap['station seats availablity']
-              ["${widget.snap['stations'][widget.fromIndex]}"][j]);
+      while (j < commonSeats.length) {
+        if (commonSeats[j] <= widget.snap['seats per couche'] * (i + 1)) {
+          row.add(commonSeats[j]);
           j++;
         } else {
           break;
@@ -405,19 +406,15 @@ class _PaymentPageState extends State<PaymentPage> {
       }
     }
 
-    List<int> newArray = matrix.expand((row) => row).toList();
-
     print('allocated seats: $allocatedSeats');
 
-    for (int i = 0; i < allocatedSeats.length; i++) {
-      newArray.remove(allocatedSeats[i]);
-    }
-
-    print('new matrix : $newArray');
+    // print('new matrix : $newArray');
     Map newMap = widget.snap['station seats availablity'];
 
     for (int i = widget.fromIndex; i < widget.toIndex; i++) {
-      newMap[widget.snap['stations'][i]] = newArray;
+      for (int j = 0; j < allocatedSeats.length; j++) {
+        newMap[widget.snap['stations'][i]].remove(allocatedSeats[j]);
+      }
     }
 
     print('New Map :  $newMap');
@@ -427,16 +424,11 @@ class _PaymentPageState extends State<PaymentPage> {
       'iteration': widget.snap['iteration'] + 1
     });
 
-    // firebaseFirestore
-    //     .collection('trains')
-    //     .doc(widget.snap['id'])
-    //     .collection('bookings')
-    //     .doc('bookings')
-    //     .update({});
+    return;
   }
 
   // buggie with highest available seats
-  int BuggiewithHighestSeats(List<List<int>> matrix) {
+  int BuggiewithHighestSeats(List<List<dynamic>> matrix) {
     List<int> seatsAvailable = [];
     for (int i = 0; i < matrix.length; i++) {
       seatsAvailable.add(matrix[i].length);
@@ -446,7 +438,25 @@ class _PaymentPageState extends State<PaymentPage> {
     return seatsAvailable.indexOf(highestNumber);
   }
 
+// function to select common seats in between stations
+  List<int> getCommonSeats(List<List<dynamic>> matrix) {
+    if (matrix.isEmpty) {
+      return [];
+    }
+    Set<int> commonSeats = Set.from(matrix.first);
+
+    for (var i = 1; i < matrix.length; i++) {
+      Set<int> currentSet = Set.from(matrix[i]);
+
+      commonSeats = commonSeats.intersection(currentSet);
+    }
+
+    return commonSeats.toList();
+  }
+
+//saving data in firebase
   savebookingDetails(String transactionId) async {
+    print('controll is in savebookingDetails');
     List<String> passengers = [];
     List<String> TransactionId = [];
     List<int> age = [];
@@ -460,40 +470,62 @@ class _PaymentPageState extends State<PaymentPage> {
         .doc('bookings')
         .get();
 
-    setState(() {
-      passengers = snapshot.data()!['passenger'];
-      age = snapshot.data()!['age'];
-      gender = snapshot.data()!['gender'];
-      TransactionId = snapshot.data()!['TransactionId'];
-      seats = snapshot.data()!['seats'];
-    });
+    print(snapshot);
 
-    passengers = passengers + widget.passengers;
-    TransactionId = TransactionId + [transactionId];
-    age = age + widget.age;
-    gender = gender + widget.gender;
-    seats = seats + allocatedSeats;
+    if (snapshot.exists) {
+      // Check if the snapshot exists and has data before accessing it
+      var data = snapshot.data();
+
+      setState(() {
+        passengers = data?['passenger'] ??
+            []; // Use the null-aware operator (??) and provide a default value (empty list) if 'passenger' is null
+        age = data?['age'] ?? [];
+        gender = data?['gender'] ?? [];
+        TransactionId = data?['TransactionId'] ?? '';
+        seats = data?['seats'] ?? [];
+      });
+
+      passengers = passengers + widget.passengers;
+      TransactionId = TransactionId + [transactionId];
+      age = age + widget.age;
+      gender = gender + widget.gender;
+      seats = seats + allocatedSeats;
 
 //stroring in the trains database
 
-    await firebaseFirestore
-        .collection('users')
-        .doc(widget.snap['id'])
-        .collection('bookings')
-        .doc('bookings')
-        .update({
-      'TransactionId': TransactionId,
-      'passenger': widget.snap[''],
-      'age': widget.age,
-      'seats': allocatedSeats,
-    });
+      await firebaseFirestore
+          .collection('trains')
+          .doc(widget.snap['id'])
+          .collection('bookings')
+          .doc('bookings')
+          .update({
+        'TransactionId': TransactionId,
+        'passenger': passengers,
+        'age': age,
+        'seats': seats,
+      });
+    } else {
+      // Handle the case when the document doesn't exist or has no data
+
+      //storing in the trains database
+      await firebaseFirestore
+          .collection('trains')
+          .doc(widget.snap['id'])
+          .collection('my bookings')
+          .doc('my bookings')
+          .set({
+        'TransactionId': transactionId,
+        'passenger': widget.passengers,
+        'age': widget.age,
+        'seats': allocatedSeats,
+      });
+    }
 
     //storing it for user
-
     await firebaseFirestore
-        .collection('trains')
+        .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('my bookings')
+        .collection('bookings')
         .doc(widget.snap['id'])
         .set({
       'TransactionId': transactionId,

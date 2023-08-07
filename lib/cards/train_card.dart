@@ -20,17 +20,45 @@ class TrainListCard extends StatefulWidget {
 }
 
 class _TrainListCardState extends State<TrainListCard> {
-  // int distance = 0;
-  // int fair = 0;
+  List<int> commonSeats = [];
 
   // @override
-  // void initState() {
-  //   TODO: implement initState
-  //   super.initState();
-  //   print("-------------------------------------------------------------");
-  //   print(widget.toIndex.abs());
-  //   print(widget.fromIndex.abs());
-  // }
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    List<List<dynamic>> matrix = [];
+
+    print('control 1');
+    for (int i = widget.fromIndex; i < widget.toIndex; i++) {
+      print(i);
+
+      matrix.add(widget.snap['station seats availablity']
+          ["${widget.snap['stations'][i]}"]);
+    }
+
+    print(matrix);
+
+    setState(() {
+      commonSeats = getCommonSeats(matrix);
+    });
+
+    print(commonSeats);
+  }
+
+  // function to select common seats in between stations
+  List<int> getCommonSeats(List<List<dynamic>> matrix) {
+    if (matrix.isEmpty) {
+      return [];
+    }
+    Set<int> commonSeats = Set.from(matrix.first);
+    for (var i = 1; i < matrix.length; i++) {
+      Set<int> currentSet = Set.from(matrix[i]);
+      // Perform intersection to get common Seats with the previous set
+      commonSeats = commonSeats.intersection(currentSet);
+    }
+
+    return commonSeats.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,13 +148,8 @@ class _TrainListCardState extends State<TrainListCard> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    trainListInfoCard(
-                        'Number Of Seats Available',
-                        widget
-                            .snap['station seats availablity']
-                                ["${widget.snap['stations'][widget.fromIndex]}"]
-                            .length
-                            .toString()),
+                    trainListInfoCard('Number Of Seats Available',
+                        commonSeats.length.toString()),
                     SizedBox(
                       width: 50,
                     ),

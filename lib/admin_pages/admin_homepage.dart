@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -27,128 +28,143 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(221, 209, 225, 238),
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (value) {
+        if (value.isKeyPressed(LogicalKeyboardKey.enter)) {
+          print('enter pressed');
+          setState(() {
+            trainIdController = trainIdController;
+          });
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Color.fromARGB(221, 209, 225, 238),
 
-      // appbar
+        // appbar
 
-      appBar: AppBar(
-        toolbarHeight: 60,
-        backgroundColor: Colors.deepPurple,
-        title: Row(
-          children: [
-            //app logo
-            Icon(
-              Icons.train,
-              size: 40,
-              color: Colors.white,
-            ),
-
-            Text(
-              'EasyRail Admin Portal',
-              style: GoogleFonts.aBeeZee(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: Colors.white),
-            ),
-          ],
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(5),
-            child: Container(
-              width: 450,
-              height: 45,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1)),
-              child: TextField(
-                controller: trainIdController,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Search With Train ID',
-                    hintStyle: TextStyle(
-                        fontStyle: FontStyle.italic, color: Colors.grey[700])),
+        appBar: AppBar(
+          toolbarHeight: 60,
+          backgroundColor: Colors.deepPurple,
+          title: Row(
+            children: [
+              //app logo
+              Icon(
+                Icons.train,
+                size: 40,
+                color: Colors.white,
               ),
-            ),
+
+              Text(
+                'EasyRail Admin Portal',
+                style: GoogleFonts.aBeeZee(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.white),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(5),
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  trainIdController = trainIdController;
-                });
-              },
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(5),
               child: Container(
-                width: 160,
+                width: 450,
                 height: 45,
                 decoration: BoxDecoration(
-                  color: Colors.orangeAccent,
-                  borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1)),
+                child: TextField(
+                  controller: trainIdController,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Search With Train ID',
+                      hintStyle: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey[700])),
                 ),
-                child: const Center(
-                  child: Text(
-                    'Search',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    trainIdController = trainIdController;
+                  });
+                },
+                child: Container(
+                  width: 160,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: Colors.orangeAccent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Search',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
                   ),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
-
-//body
-      body: Column(
-        children: [
-//train list details
-          Expanded(
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('trains')
-                    .where('id', isGreaterThanOrEqualTo: trainIdController.text)
-                    .snapshots(),
-                builder: (context,
-                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        var data = snapshot.data!.docs[index].data();
-
-                        return AdminTrainListCard(
-                            snap: snapshot.data!.docs[index].data(),
-                            trainId: trainIdController.text);
-                      });
-                }),
-          ),
-        ],
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'add new train',
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => AddNewTrainPage()));
-        },
-        child: Container(
-          width: 40,
-          height: 40,
-          child: Icon(CupertinoIcons.add),
+            )
+          ],
         ),
-      ),
 
-      drawer: Drawer(),
+        //body
+        body: Column(
+          children: [
+            //train list details
+            Expanded(
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('trains')
+                      .where('id',
+                          isGreaterThanOrEqualTo: trainIdController.text)
+                      .snapshots(),
+                  builder: (context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var data = snapshot.data!.docs[index].data();
+
+                          return AdminTrainListCard(
+                              snap: snapshot.data!.docs[index].data(),
+                              trainId: trainIdController.text);
+                        });
+                  }),
+            ),
+          ],
+        ),
+
+        floatingActionButton: FloatingActionButton(
+          tooltip: 'add new train',
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => AddNewTrainPage()));
+          },
+          child: Container(
+            width: 40,
+            height: 40,
+            child: Icon(CupertinoIcons.add),
+          ),
+        ),
+
+        drawer: Drawer(),
+      ),
     );
   }
 }
