@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,10 +17,11 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
   int numberOfSeatsPercoache = 0;
   double fair = 0;
   List<int> seatsAvailable = [];
-  List<int> allSeatsList = [];
+  List<int> totalSeats = [];
   List<String> stationList = [];
   List<int> distanceList = [];
   List<DateTime?> timestampStation = [];
+  Map stationSeatMap = {};
 
   void _addStation() {
     setState(() {
@@ -300,9 +302,18 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
 
                 print(seatsAvailable);
 
-                for (int i = 0; i < numberOfcoaches; i++) {
-                  allSeatsList.add(i);
+                for (int i = 1;
+                    i <= numberOfcoaches * numberOfSeatsPercoache;
+                    i++) {
+                  totalSeats.add(i);
                 }
+
+                for (int i = 0; i < stationList.length; i++) {
+                  stationSeatMap[stationList[i]] = totalSeats;
+                }
+
+                // print(stationSeatMap);
+                // print(stationList.length);
 
                 try {
                   await FirebaseFirestore.instance
@@ -318,9 +329,22 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                     "station times": timestampStation,
                     'coaches': numberOfcoaches,
                     'seats per couche': numberOfSeatsPercoache,
-                    'seats available': seatsAvailable,
-                    'seatMatrix': seatMatrix,
+                    // 'seats available': seatsAvailable,
                     'iteration': 0,
+                    'Jiteration': (numberOfcoaches - 1) / 2,
+                    'station seats availablity': stationSeatMap,
+                  });
+
+                  await FirebaseFirestore.instance
+                      .collection('trains')
+                      .doc(trainId)
+                      .collection('bookings')
+                      .doc('bookings')
+                      .set({
+                    'passenger': [],
+                    'seats': [],
+                    'age': [],
+                    'gender': []
                   });
                 } on FirebaseException catch (e) {
                   print(e);

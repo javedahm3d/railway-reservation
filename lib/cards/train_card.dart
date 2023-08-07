@@ -122,7 +122,10 @@ class _TrainListCardState extends State<TrainListCard> {
                   children: [
                     trainListInfoCard(
                         'Number Of Seats Available',
-                        widget.snap['seats available'][widget.fromIndex]
+                        widget
+                            .snap['station seats availablity']
+                                ["${widget.snap['stations'][widget.fromIndex]}"]
+                            .length
                             .toString()),
                     SizedBox(
                       width: 50,
@@ -170,7 +173,11 @@ class _TrainListCardState extends State<TrainListCard> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) =>
-                                PassengerAndContactDeatilsPage(),
+                                PassengerAndContactDeatilsPage(
+                              snap: widget.snap,
+                              fromIndex: widget.fromIndex,
+                              toIndex: widget.toIndex,
+                            ),
                           ));
                         },
                         child: Card(

@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +9,15 @@ import 'package:railways/components/my_appbar.dart';
 import 'package:railways/components/show_message.dart';
 
 class PassengerAndContactDeatilsPage extends StatefulWidget {
+  final snap;
+  final int fromIndex;
+  final int toIndex;
+  const PassengerAndContactDeatilsPage(
+      {super.key,
+      required this.snap,
+      required this.fromIndex,
+      required this.toIndex});
+
   @override
   _PassengerAndContactDeatilsPageState createState() =>
       _PassengerAndContactDeatilsPageState();
@@ -18,8 +30,10 @@ class _PassengerAndContactDeatilsPageState
   List<String> passengerList = [];
   List<int> age = [];
   List<String> gender = [];
+  List<int> allocatedSeats = [];
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   void addDetails() {
     setState(() {
@@ -214,19 +228,21 @@ class _PassengerAndContactDeatilsPageState
               //submit button
               InkWell(
                 onTap: () {
-                  if (passengerList.isEmpty) {
-                    ShowMessage().showMessage(
-                        'Please add atleast one passenger', context);
-                  } else {
-                    if (emailController.text.isEmpty) {
-                      ShowMessage()
-                          .showMessage('Please enter your email id', context);
-                    }
-                    if (!EmailValidator.validate(emailController.text, true)) {
-                      ShowMessage().showMessage(
-                          'Please enter a valid email id', context);
-                    }
-                  }
+                  // if (passengerList.isEmpty) {
+                  //   ShowMessage().showMessage(
+                  //       'Please add atleast one passenger', context);
+                  // } else {
+                  //   if (emailController.text.isEmpty) {
+                  //     ShowMessage()
+                  //         .showMessage('Please enter your email id', context);
+                  //   }
+                  //   if (!EmailValidator.validate(emailController.text, true)) {
+                  //     ShowMessage().showMessage(
+                  //         'Please enter a valid email id', context);
+                  //   }
+                  // }
+
+                  bookticketlogic();
                 },
                 child: Container(
                   width: 400,
@@ -250,5 +266,171 @@ class _PassengerAndContactDeatilsPageState
         ),
       ),
     );
+  }
+
+//booking logic
+
+  bookticketlogic() {
+    print(widget.snap['stations'].length);
+    int buggieCount = widget.snap['stations'].length;
+    List<List<List<int>>> stationsMatrix = [];
+    int j = 0;
+    int selected_buggie = 0;
+
+    // for (int a = widget.fromIndex;
+    //     a < widget.snap['stations'].length - 1;
+    //     a++) {
+    List<List<int>> matrix = [];
+
+    for (int i = 0; i < widget.snap['coaches']; i++) {
+      List<int> row = [];
+      print('$i\n');
+
+      while (j <
+          widget
+              .snap['station seats availablity']
+                  ["${widget.snap['stations'][widget.fromIndex]}"]
+              .length) {
+        if (widget.snap['station seats availablity']
+                ["${widget.snap['stations'][widget.fromIndex]}"][j] <=
+            widget.snap['seats per couche'] * (i + 1)) {
+          row.add(widget.snap['station seats availablity']
+              ["${widget.snap['stations'][widget.fromIndex]}"][j]);
+          j++;
+        } else {
+          break;
+        }
+      }
+      matrix.add(row);
+    }
+
+    print(matrix);
+
+    if (passengerList.length >
+        widget
+            .snap['station seats availablity']
+                ["${widget.snap['stations'][widget.fromIndex]}"]
+            .length) {
+      ShowMessage().showMessage('max seat limit has reached', context);
+    } else {
+      //selecting buggie for the first time
+
+      if (widget.snap['iteration'] < widget.snap['coaches']) {
+        print('control is here');
+        int mid = (widget.snap['coaches'] - 1) / 2;
+
+        if (widget.snap['iteration'] < widget.snap['coaches']) {
+          if (widget.snap['iteration'] == 0) {
+            //allocate seat in middle buggie
+            setState(() {
+              selected_buggie = mid;
+            });
+          } else if (widget.snap['iteration'] % 2 == 0) {
+            setState(() {
+              selected_buggie =
+                  mid - int.parse(widget.snap['Jiteration'].toString());
+              firebaseFirestore
+                  .collection('trains')
+                  .doc(widget.snap['id'])
+                  .update({'Jiteration': widget.snap['Jiteration'] - 1});
+            });
+          } else {
+            setState(() {
+              selected_buggie =
+                  mid + int.parse(widget.snap['Jiteration'].toString());
+            });
+          }
+        }
+      } else {
+        setState(() {
+          selected_buggie = BuggiewithHighestSeats(matrix);
+        });
+      }
+
+      print('selected buggie : $selected_buggie');
+
+// if all lower birth are filled already
+      if (matrix[selected_buggie].length <
+          widget.snap['seats per couche'] / 2) {
+        for (int i = 0; i < passengerList.length; i++) {
+          print('my controller 1');
+          int midRef = matrix[selected_buggie].length ~/ 2;
+
+          allocatedSeats.add(matrix[selected_buggie][midRef]);
+          // matrix[selected_buggie].removeAt(midRef);
+        }
+      }
+
+//if lower birth are available
+      else {
+        print('my controller');
+        int midRef = matrix[selected_buggie].length ~/ 2;
+        int l = midRef - 1;
+        int h = midRef + 1;
+        int i = 0;
+
+        if (matrix[selected_buggie][midRef] % 2 != 0) {
+          allocatedSeats.add(matrix[selected_buggie][midRef]);
+          i++;
+        }
+
+        while (i < passengerList.length &&
+            l > 0 &&
+            h < matrix[selected_buggie].length) {
+          if (matrix[selected_buggie][l] % 2 != 0) {
+            allocatedSeats.add(matrix[selected_buggie][l]);
+            i++;
+          }
+          if (matrix[selected_buggie][h] % 2 != 0) {
+            allocatedSeats.add(matrix[selected_buggie][h]);
+            i++;
+          }
+          l--;
+          h++;
+        }
+
+        print(matrix);
+      }
+    }
+
+    List<int> newArray = matrix.expand((row) => row).toList();
+
+    print('allocated seats: $allocatedSeats');
+
+    for (int i = 0; i < allocatedSeats.length; i++) {
+      newArray.remove(allocatedSeats[i]);
+    }
+
+    print('new matrix : $newArray');
+    Map newMap = widget.snap['station seats availablity'];
+
+    for (int i = widget.fromIndex; i < widget.toIndex; i++) {
+      newMap[widget.snap['stations'][i]] = newArray;
+    }
+
+    print('New Map :  $newMap');
+
+    firebaseFirestore.collection('trains').doc(widget.snap['id']).update({
+      'station seats availablity': newMap,
+      'iteration': widget.snap['iteration'] + 1
+    });
+
+    // firebaseFirestore
+    //     .collection('trains')
+    //     .doc(widget.snap['id'])
+    //     .collection('bookings')
+    //     .doc('bookings')
+    //     .update({});
+  }
+
+  // buggie with highest available seats
+  int BuggiewithHighestSeats(List<List<int>> matrix) {
+    List<int> seatsAvailable = [];
+    for (int i = 0; i < matrix.length; i++) {
+      seatsAvailable.add(matrix[i].length);
+    }
+    int highestNumber = seatsAvailable.reduce(
+        (currentMax, element) => currentMax > element ? currentMax : element);
+    return seatsAvailable.indexOf(highestNumber);
   }
 }

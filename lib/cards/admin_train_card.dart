@@ -121,8 +121,6 @@ class _AdminTrainListCardState extends State<AdminTrainListCard> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    trainListInfoCard('Number Of Seats Available',
-                        widget.snap['seats available'][0].toString()),
                     SizedBox(
                       width: 50,
                     ),
@@ -132,8 +130,7 @@ class _AdminTrainListCardState extends State<AdminTrainListCard> {
                     SizedBox(
                       width: 50,
                     ),
-                    trainListInfoCard('fair',
-                        '₹${widget.snap['fair'] * (widget.snap['distance'][widget.snap['station times'].length - 1] - widget.snap['distance'][0])}'),
+                    trainListInfoCard('Waiting List', '0'),
 
                     Spacer(),
 
