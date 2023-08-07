@@ -273,7 +273,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   bookingSeatAllocationLogic() {
-    print(widget.snap['stations'].length);
+    //print(widget.snap['stations'].length);
     int buggieCount = widget.snap['stations'].length;
     List<List<List<int>>> stationsMatrix = [];
     int j = 0;
@@ -282,8 +282,73 @@ class _PaymentPageState extends State<PaymentPage> {
     // for (int a = widget.fromIndex;
     //     a < widget.snap['stations'].length - 1;
     //     a++) {
-    List<List<int>> matrix = [];
 
+    // matrix stores the available ticket nos of all coaches in a train between From and To
+    List<List<int>> matrix = [];
+    String fromStation = "${widget.snap['stations'][widget.fromIndex]}";
+    String toStation = "${widget.snap['stations'][widget.toIndex]}";
+    int seatsPerCoach = widget.snap['seats per couche'];
+    int count_passengers = widget.passengers.length;
+
+    for (int i = widget.fromIndex; i < widget.toIndex; i++) {
+      //stationName will iterate over all stations from source to destination
+      String stationName = widget.snap['stations'][i];
+      List<int> seats = widget.snap['station seats availablity'][stationName];
+      //store all such ticket nos in a matrix
+      matrix.add(seats);
+    }
+
+    //find common ticket nos among all the stations
+    //this will return the available seats
+    List<int> available_seats = findCommonElements(matrix);
+    print("Available seats:${available_seats.length}\n");
+    print(available_seats);
+
+    if (count_passengers > available_seats.length) {
+      ShowMessage().showMessage('max seat limit has reached', context);
+      return;
+    }
+
+    List<int> levelOrderTraversal = getLevelOrderTraversal(buggieCount);
+    List<List<int>> availableSeatsByCoach =
+        List.generate(buggieCount, (_) => []);
+
+    //split linear seats into seats in each coach
+    for (int i = 0; i <= available_seats.length - 1; i++) {
+      int index = (available_seats[i] - 1) ~/ seatsPerCoach;
+      availableSeatsByCoach[index].add(available_seats[i]);
+    }
+
+    print("Available seats by coach:");
+    print(availableSeatsByCoach);
+
+    //go level order traversal to find the coach with the highest availability
+    int k =
+        count_passengers; //denotes how many passengers are left to be booked
+    while (k > 0) {
+      int coachIndex = findMeCoach(availableSeatsByCoach, buggieCount);
+      List<int> bookedSeats =
+          bookSeatsInCoach(availableSeatsByCoach[coachIndex], k);
+
+      //update availableSeatsByCoach
+      for (int i = 0; i < bookedSeats.length; i++) {
+        availableSeatsByCoach[coachIndex].remove(bookedSeats[i]);
+        //add to allocate
+        allocatedSeats.add(coachIndex * seatsPerCoach + bookedSeats[i]);
+      }
+
+      if (bookedSeats.isEmpty == true) {
+        //error message as seats could not be booked
+        print("Seat could not be allocated for $k passengers\n");
+        break;
+      } else if (bookedSeats.length == k) //all seats are booked
+        break;
+      else {
+        k = k - bookedSeats.length;
+      }
+    }
+
+    ///////////////////////////
     for (int i = 0; i < widget.snap['coaches']; i++) {
       List<int> row = [];
       print('$i\n');
@@ -502,4 +567,82 @@ class _PaymentPageState extends State<PaymentPage> {
       'seats': allocatedSeats,
     });
   }
+}
+
+List<int> findCommonElements(List<List<int>> listOfLists) {
+  if (listOfLists.isEmpty) {
+    return [];
+  }
+
+  Set<int> commonElements = listOfLists.first.toSet();
+
+  for (var list in listOfLists) {
+    commonElements = commonElements.intersection(list.toSet());
+  }
+
+  return commonElements.toList();
+}
+
+List<int> getLevelOrderTraversal(int N) {
+  int start = 0;
+  int end = N - 1;
+  if (end < 0 || start > end) {
+    return <int>[];
+  }
+
+  List<int> result = [];
+  List<List<int>> queue = [];
+  queue.add([start, end]);
+
+  while (queue.isNotEmpty) {
+    List<int> pair = queue.removeAt(0);
+    int a = pair[0];
+    int b = pair[1];
+    int mid = (b + a) ~/ 2;
+
+    if (a <= b) {
+      result.add(mid);
+      queue.add([a, mid - 1]); // insert left child
+      queue.add([mid + 1, b]); // insert right child
+    }
+  }
+
+  return result;
+}
+
+int findMeCoach(List<List<int>> availableSeatsByCoach, int buggieCount) {
+  List<int> levelOrderTraversal = getLevelOrderTraversal(buggieCount);
+  int highest = 0;
+  for (int i = 1; i < buggieCount; i++) {
+    if (availableSeatsByCoach[levelOrderTraversal[highest]].length <
+        availableSeatsByCoach[levelOrderTraversal[i]].length) {
+      highest = i;
+    }
+  }
+  return levelOrderTraversal[highest];
+}
+
+List<int> bookSeatsInCoach(List<int> listSeats, int k) {
+  List<int> bookedSeats = [];
+  List<int> oddList = [];
+  List<int> evenList = [];
+  int l = k;
+
+  for (int i = 0; i < listSeats.length; i++) {
+    if (listSeats[i] % 2 == 0)
+      evenList.add(listSeats[i]);
+    else
+      oddList.add(listSeats[i]);
+  }
+  //check if any odd seats available
+  if (l <= oddList.length) {
+    //pop k elements from odd,listSeats
+    //add to booked seats
+  } else {
+    //pop all odd from odd,listSeats
+    //pop k - odd from even,ListSeats
+    //if even
+  }
+
+  return bookedSeats;
 }
