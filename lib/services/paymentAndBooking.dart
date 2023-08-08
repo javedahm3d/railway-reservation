@@ -518,7 +518,7 @@ class _PaymentPageState extends State<PaymentPage> {
       await firebaseFirestore
           .collection('trains')
           .doc(widget.snap['id'])
-          .collection('my bookings')
+          .collection('bookings')
           .doc(widget.snap['stations'][widget.fromIndex])
           .set({
         'TransactionId': transactionId,
@@ -537,7 +537,7 @@ class _PaymentPageState extends State<PaymentPage> {
         .set({
       'TrainId': widget.snap['id'],
       'TransactionId': transactionId,
-      // 'amount': totalAmout,
+      'amount': totalAmout,
       'individual amount': amounts,
       'passenger': widget.passengers,
       'age': widget.age,

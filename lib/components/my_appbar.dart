@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:railways/admin_pages/admin_homepage.dart';
 import 'package:railways/login/login_or_register.dart';
+import 'package:railways/pages/homepage.dart';
 import 'package:railways/pages/mybookings.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -26,10 +27,17 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.orange,
           ),
 
-          Text(
-            'EasyRail',
-            style: GoogleFonts.aBeeZee(
-                fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black),
+          InkWell(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomePage(),
+            )),
+            child: Text(
+              'EasyRail',
+              style: GoogleFonts.aBeeZee(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                  color: Colors.black),
+            ),
           ),
         ],
       ),
