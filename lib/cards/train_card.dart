@@ -148,7 +148,7 @@ class _TrainListCardState extends State<TrainListCard> {
                       width: 50,
                     ),
                     trainListInfoCard('fair',
-                        '₹${widget.snap['fair'] * (widget.snap['distance'][widget.toIndex] - widget.snap['distance'][widget.fromIndex])}'),
+                        '₹${int.parse(widget.snap['fair'] * (widget.snap['distance'][widget.toIndex] - widget.snap['distance'][widget.fromIndex]))}'),
 
                     SizedBox(
                       width: 50,
