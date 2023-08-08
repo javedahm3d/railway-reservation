@@ -12,10 +12,11 @@ class GetStations {
     'dharwar',
     'banglore',
     'goa',
-    'a',
-    'b',
-    'c',
-    'd',
+    'jaipur',
+    'belgaum',
+    'kota',
+    'agra',
+    'amritsar',
   ];
 
   List<String> getSuggestions(String query) {

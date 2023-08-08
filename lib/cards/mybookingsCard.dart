@@ -52,7 +52,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
 
     snap = await FirebaseFirestore.instance
         .collection('trains')
-        .doc(widget.snap['trainId'])
+        .doc(widget.snap['TrainId'])
         .get();
 
     print('controller 01');
@@ -89,6 +89,8 @@ class _MybookingsCardState extends State<MybookingsCard> {
   Future<void> _downloadTicket(BuildContext context) async {
     List<Passenger> passengers = [];
 
+    print('download pressed');
+
     for (int i = 0; i < widget.snap['passenger'].length; i++) {
       passengers.add(Passenger(
         name: '${widget.snap['passenger'][i]}',
@@ -100,7 +102,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
       fromStation: fromStationName,
       toStation: toStationName,
       transactionId: widget.snap['TransactionId'],
-      trainId: widget.snap['trainId'],
+      trainId: widget.snap['TrainId'],
       passengers: passengers,
     );
 

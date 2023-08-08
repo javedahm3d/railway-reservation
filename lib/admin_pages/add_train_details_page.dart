@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../services/station_suggestion.dart';
 
 class AddNewTrainPage extends StatefulWidget {
   @override
@@ -223,17 +226,18 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                       int num = index + 1;
                       return Row(
                         children: [
-                          Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                  labelText: 'Station ${index + 1}'),
-                              onChanged: (value) {
-                                setState(() {
-                                  stationList[index] = value.toLowerCase();
-                                });
-                              },
-                            ),
-                          ),
+                          Expanded(child: myTextAheadField(index)
+
+                              // TextField(
+                              //   decoration: InputDecoration(
+                              //       labelText: 'Station ${index + 1}'),
+                              //   onChanged: (value) {
+                              //     setState(() {
+                              //       stationList[index] = value.toLowerCase();
+                              //     });
+                              //   },
+                              // ),
+                              ),
                           SizedBox(width: 16),
                           Expanded(
                             child: InkWell(
@@ -351,6 +355,7 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
                           child: Text('OK'),
                         ),
@@ -378,6 +383,66 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  myTextAheadField(int index) {
+    // TextEditingController controller = TextEditingController();
+    return SizedBox(
+      height: 50,
+      width: 350,
+      child: TypeAheadField(
+        noItemsFoundBuilder: (context) => const SizedBox(
+          height: 50,
+          child: Center(
+            child: Text('No Stations Found'),
+          ),
+        ),
+        suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+            color: Colors.white,
+            elevation: 4.0,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10),
+            )),
+        debounceDuration: const Duration(milliseconds: 400),
+        textFieldConfiguration: TextFieldConfiguration(
+            // controller: controller,
+            decoration: InputDecoration(
+                // border: InputBorder,
+                hintText: 'station $index',
+                fillColor: Colors.white,
+                filled: true)),
+        suggestionsCallback: (value) {
+          return GetStations().getSuggestions(value);
+        },
+        itemBuilder: (context, String suggestion) {
+          return Row(
+            children: [
+              const SizedBox(
+                width: 10,
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Text(
+                    suggestion,
+                    maxLines: 1,
+                    // style: TextStyle(color: Colors.red),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              )
+            ],
+          );
+        },
+        onSuggestionSelected: (String suggestion) {
+          setState(() {
+            // controller.text = suggestion;
+            stationList[index] = suggestion;
+          });
+        },
       ),
     );
   }

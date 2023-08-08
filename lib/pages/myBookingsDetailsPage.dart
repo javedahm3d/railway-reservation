@@ -58,7 +58,7 @@ class _MyBookingsDetailsPageState extends State<MyBookingsDetailsPage> {
                       ),
                     ),
                     Text('transaction id: ${widget.snap['TransactionId']}'),
-                    Text('train id: ${widget.snap['trainId']}'),
+                    Text('train id: ${widget.snap['TrainId']}'),
                     Text('train name: ${widget.trainName}'),
                     SizedBox(
                       height: 5,
