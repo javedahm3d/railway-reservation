@@ -285,12 +285,13 @@ class _PaymentPageState extends State<PaymentPage> {
     List<List<dynamic>> matrix = [];
     List<int> commonSeats = [];
 
-    for (int i = widget.fromIndex; i < widget.toIndex - 1; i++) {
+    for (int i = widget.fromIndex; i < widget.toIndex; i++) {
       matrix.add(widget.snap['station seats availablity']
           ["${widget.snap['stations'][i]}"]);
     }
 
     commonSeats = getCommonSeats(matrix);
+    matrix = [];
 
     for (int i = 0; i < widget.snap['coaches']; i++) {
       List<int> row = [];
@@ -311,12 +312,8 @@ class _PaymentPageState extends State<PaymentPage> {
 
     widget.passengers.length;
 
-    if (widget.passengers.length >
-        widget
-            .snap['station seats availablity']
-                ["${widget.snap['stations'][widget.fromIndex]}"]
-            .length) {
-      ShowMessage().showMessage('max seat limit has reached', context);
+    if (widget.passengers.length > commonSeats.length) {
+      ShowMessage().showMessage('seats unavailable', context);
     } else {
       //selecting buggie for the first time
 
@@ -497,7 +494,7 @@ class _PaymentPageState extends State<PaymentPage> {
           .collection('trains')
           .doc(widget.snap['id'])
           .collection('bookings')
-          .doc('bookings')
+          .doc(widget.snap['stations'][widget.fromIndex])
           .update({
         'TransactionId': TransactionId,
         'passenger': passengers,
@@ -512,7 +509,7 @@ class _PaymentPageState extends State<PaymentPage> {
           .collection('trains')
           .doc(widget.snap['id'])
           .collection('my bookings')
-          .doc('my bookings')
+          .doc(widget.snap['stations'][widget.fromIndex])
           .set({
         'TransactionId': transactionId,
         'passenger': widget.passengers,
@@ -528,10 +525,15 @@ class _PaymentPageState extends State<PaymentPage> {
         .collection('bookings')
         .doc(widget.snap['id'])
         .set({
+      'TrainId': widget.snap['id'].toString(),
       'TransactionId': transactionId,
+      'amount': totalAmout,
+      'individual amount': amounts,
       'passenger': widget.passengers,
       'age': widget.age,
       'seats': allocatedSeats,
+      'from station index': widget.fromIndex,
+      'to station index': widget.toIndex
     });
   }
 }

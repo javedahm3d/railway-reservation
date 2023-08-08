@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:railways/admin_pages/admin_homepage.dart';
+import 'package:railways/login/login_or_register.dart';
+import 'package:railways/pages/mybookings.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppBar({super.key});
@@ -36,7 +38,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Center(
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MyBookingsPage(),
+                ));
+              },
               child: Text('my bookings',
                   style: GoogleFonts.roboto(
                       fontWeight: FontWeight.w600,
