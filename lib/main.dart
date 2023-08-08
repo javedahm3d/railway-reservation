@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:railways/admin_pages/admin_homepage.dart';
 import 'package:railways/pages/homepage.dart';
+import 'package:railways/pages/myBookingsDetailsPage.dart';
+import 'package:railways/pages/mybookings.dart';
 import 'package:railways/pages/train_list_page.dart';
 import 'package:railways/services/paymentAndBooking.dart';
 import 'firebase_options.dart';
