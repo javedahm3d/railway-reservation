@@ -208,7 +208,13 @@ class _TrainListPageState extends State<TrainListPage> {
                             padding: const EdgeInsets.only(right: 110),
                             child: InkWell(
                               onTap: () {
-                                // navigator
+                                setState(() {
+                                  widget.fromstationController.text =
+                                      widget.fromstationController.text;
+
+                                  widget.tostationController.text =
+                                      widget.tostationController.text;
+                                });
                               },
                               child: Container(
                                 width: 170,
@@ -240,7 +246,13 @@ class _TrainListPageState extends State<TrainListPage> {
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('trains')
-                    .where('start time', isGreaterThanOrEqualTo: widget.date)
+                    .where(
+                      'stations',
+                      arrayContains: widget.fromstationController.text,
+                    )
+                    // where('sta')
+
+                    // where('station')
                     .snapshots(),
                 builder: (context,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -251,18 +263,27 @@ class _TrainListPageState extends State<TrainListPage> {
                     );
                   }
 
+                  if (widget.tostationController.text.isEmpty ||
+                      widget.fromstationController.text.isEmpty) {
+                    return Center(
+                      child: Text('Please select staions'),
+                    );
+                  }
+
+                  // //if no trains are available
+                  // if (snapshot.data!.docs.length == 0) {
+                  //   return Center(child: Text('no trains found'));
+                  // }
+
+                  print(snapshot.data!.docs.length);
+
                   return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
                         var data = snapshot.data!.docs[index].data();
+                        print(data);
 
-                        if (widget.tostationController.text.isEmpty ||
-                            widget.fromstationController.text.isEmpty) {
-// Train list card
-                          return Center(
-                            child: Text('Please select staions'),
-                          );
-                        } else if (data['stations']
+                        if (data['stations']
                                 .contains(widget.fromstationController.text) &&
                             data['stations']
                                 .contains(widget.tostationController.text) &&
@@ -279,8 +300,6 @@ class _TrainListPageState extends State<TrainListPage> {
                             fromIndex: data['stations']
                                 .indexOf(widget.fromstationController.text),
                           );
-                        } else {
-                          return Center(child: Text('no trains found'));
                         }
                       });
                 }),

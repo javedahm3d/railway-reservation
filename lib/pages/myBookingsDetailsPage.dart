@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:railways/cards/mybookingsCard.dart';
 import 'package:railways/components/my_appbar.dart';
 
 class MyBookingsDetailsPage extends StatefulWidget {
@@ -107,23 +108,25 @@ class _MyBookingsDetailsPageState extends State<MyBookingsDetailsPage> {
                         },
                       ),
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        width: 170,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.orange,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Center(
-                          child: Text(
-                            'Download Ticket',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w800),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+
+                    //   },
+                    //   child: Container(
+                    //     width: 170,
+                    //     height: 50,
+                    //     decoration: BoxDecoration(
+                    //         color: Colors.orange,
+                    //         borderRadius: BorderRadius.circular(20)),
+                    //     child: Center(
+                    //       child: Text(
+                    //         'Download Ticket',
+                    //         style: TextStyle(
+                    //             fontSize: 18, fontWeight: FontWeight.w800),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: 10,
                     )

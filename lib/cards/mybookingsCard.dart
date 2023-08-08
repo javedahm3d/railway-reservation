@@ -1,11 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 import 'package:railways/cards/train_list_info_card.dart';
 import 'package:railways/pages/add_passenger_and_contatc_details.dart';
 import 'package:railways/pages/myBookingsDetailsPage.dart';
 import 'package:railways/pages/view_route.dart';
+
+import '../ticket download/pdf_generator.dart';
+import '../ticket download/ticket_data.dart';
 
 class MybookingsCard extends StatefulWidget {
   final snap;
@@ -77,6 +83,30 @@ class _MybookingsCardState extends State<MybookingsCard> {
     print(fromTime);
     print(toTime);
     print(distance);
+  }
+
+  //pdf ticket generator
+  Future<void> _downloadTicket(BuildContext context) async {
+    List<Passenger> passengers = [];
+
+    for (int i = 0; i < widget.snap['passenger'].length; i++) {
+      passengers.add(Passenger(
+        name: '${widget.snap['passenger'][i]}',
+        seatNo: '${widget.snap['seats'][i]}',
+      ));
+    }
+    final TicketData ticketData = TicketData(
+      trainName: trainame,
+      fromStation: fromStationName,
+      toStation: toStationName,
+      transactionId: widget.snap['TransactionId'],
+      trainId: widget.snap['trainId'],
+      passengers: passengers,
+    );
+
+    final Uint8List pdfData = await generateTicketPdf(ticketData);
+
+    await Printing.layoutPdf(onLayout: (format) async => pdfData);
   }
 
   @override
@@ -176,7 +206,9 @@ class _MybookingsCardState extends State<MybookingsCard> {
                     Padding(
                       padding: const EdgeInsets.only(top: 30, left: 5),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          _downloadTicket(context);
+                        },
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),

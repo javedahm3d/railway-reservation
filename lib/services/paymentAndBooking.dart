@@ -310,96 +310,106 @@ class _PaymentPageState extends State<PaymentPage> {
 
     print(matrix);
 
-    widget.passengers.length;
+    int k = widget.passengers.length;
 
-    if (widget.passengers.length > commonSeats.length) {
-      ShowMessage().showMessage('seats unavailable', context);
-    } else {
-      //selecting buggie for the first time
+    //  seat allocation algorithm
 
-      if (widget.snap['iteration'] < widget.snap['coaches']) {
-        print('control is here');
-        int mid = (widget.snap['coaches'] - 1) / 2;
+    while (allocatedSeats.length < k) {
+      if (widget.passengers.length > commonSeats.length) {
+        ShowMessage().showMessage('seats unavailable', context);
+      } else {
+        //selecting buggie for the first time
 
         if (widget.snap['iteration'] < widget.snap['coaches']) {
-          if (widget.snap['iteration'] == 0) {
-            //allocate seat in middle buggie
-            setState(() {
-              selected_buggie = mid;
-            });
-          } else if (widget.snap['iteration'] % 2 == 0) {
-            setState(() {
-              selected_buggie =
-                  mid - int.parse(widget.snap['Jiteration'].toString());
-              firebaseFirestore
-                  .collection('trains')
-                  .doc(widget.snap['id'])
-                  .update({'Jiteration': widget.snap['Jiteration'] - 1});
-            });
-          } else {
-            setState(() {
-              selected_buggie =
-                  mid + int.parse(widget.snap['Jiteration'].toString());
-            });
-          }
-        }
-      } else {
-        setState(() {
-          selected_buggie = BuggiewithHighestSeats(matrix);
-        });
-      }
+          print('control is here');
+          int mid = (widget.snap['coaches'] - 1) / 2;
 
-      print('selected buggie : $selected_buggie');
+          if (widget.snap['iteration'] < widget.snap['coaches']) {
+            if (widget.snap['iteration'] == 0) {
+              //allocate seat in middle buggie
+              setState(() {
+                selected_buggie = mid;
+              });
+            } else if (widget.snap['iteration'] % 2 == 0) {
+              setState(() {
+                selected_buggie =
+                    mid - int.parse(widget.snap['Jiteration'].toString());
+                firebaseFirestore
+                    .collection('trains')
+                    .doc(widget.snap['id'])
+                    .update({'Jiteration': widget.snap['Jiteration'] - 1});
+              });
+            } else {
+              setState(() {
+                selected_buggie =
+                    mid + int.parse(widget.snap['Jiteration'].toString());
+              });
+            }
+          }
+        } else {
+          setState(() {
+            selected_buggie = BuggiewithHighestSeats(matrix);
+          });
+        }
+
+        print('selected buggie : $selected_buggie');
 
 // if all lower birth are filled already
-      if (matrix[selected_buggie].length <
-          widget.snap['seats per couche'] / 2) {
-        for (int i = 0; i < widget.passengers.length; i++) {
-          print('my controller 1');
-          int midRef = matrix[selected_buggie].length ~/ 2;
+        if (matrix[selected_buggie].length <
+            widget.snap['seats per couche'] / 2) {
+          for (int i = 0; i < widget.passengers.length; i++) {
+            print('my controller 1');
+            int midRef = matrix[selected_buggie].length ~/ 2;
 
-          allocatedSeats.add(matrix[selected_buggie][midRef]);
-          // matrix[selected_buggie].removeAt(midRef);
+            allocatedSeats.add(matrix[selected_buggie][midRef]);
+            // matrix[selected_buggie].removeAt(midRef);
+          }
         }
-      }
 
 //if lower birth are available
-      else {
-        print('my controller');
-        int midRef = matrix[selected_buggie].length ~/ 2;
-        int l = midRef - 1;
-        int h = midRef + 1;
-        int i = 0;
+        else {
+          print('my controller');
+          int midRef = matrix[selected_buggie].length ~/ 2;
+          int l = midRef - 1;
+          int h = midRef + 1;
+          int i = 0;
 
-        if (matrix[selected_buggie][midRef] % 2 != 0) {
-          allocatedSeats.add(matrix[selected_buggie][midRef]);
-          i++;
-        }
-
-        while (i < widget.passengers.length &&
-            l > 0 &&
-            h < matrix[selected_buggie].length) {
-          if (matrix[selected_buggie][l] % 2 != 0) {
-            allocatedSeats.add(matrix[selected_buggie][l]);
+          if (matrix[selected_buggie][midRef] % 2 != 0) {
+            allocatedSeats.add(matrix[selected_buggie][midRef]);
             i++;
+          }
 
-            if (i >= widget.passengers.length) {
-              break;
+          while (i < widget.passengers.length
+              // &&
+              // l > 0 &&
+              // h < matrix[selected_buggie].length
+              ) {
+            if (matrix[selected_buggie][l] % 2 != 0) {
+              allocatedSeats.add(matrix[selected_buggie][l]);
+              i++;
+
+              if (i >= widget.passengers.length) {
+                break;
+              }
+            }
+            if (matrix[selected_buggie][h] % 2 != 0) {
+              allocatedSeats.add(matrix[selected_buggie][h]);
+
+              i++;
+              if (i >= widget.passengers.length) {
+                break;
+              }
+            }
+            if (l > 0) {
+              l--;
+            }
+            if (h < matrix[selected_buggie].length) {
+              h++;
             }
           }
-          if (matrix[selected_buggie][h] % 2 != 0) {
-            allocatedSeats.add(matrix[selected_buggie][h]);
 
-            i++;
-            if (i >= widget.passengers.length) {
-              break;
-            }
-          }
-          l--;
-          h++;
+          print(matrix);
         }
-
-        print(matrix);
       }
     }
 
@@ -525,9 +535,9 @@ class _PaymentPageState extends State<PaymentPage> {
         .collection('bookings')
         .doc(widget.snap['id'])
         .set({
-      'TrainId': widget.snap['id'].toString(),
+      'TrainId': widget.snap['id'],
       'TransactionId': transactionId,
-      'amount': totalAmout,
+      // 'amount': totalAmout,
       'individual amount': amounts,
       'passenger': widget.passengers,
       'age': widget.age,

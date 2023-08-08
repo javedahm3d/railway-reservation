@@ -229,7 +229,7 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                                   labelText: 'Station ${index + 1}'),
                               onChanged: (value) {
                                 setState(() {
-                                  stationList[index] = value;
+                                  stationList[index] = value.toLowerCase();
                                 });
                               },
                             ),
@@ -320,12 +320,13 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                       .collection('trains')
                       .doc(trainId)
                       .set({
-                    "name": trainName,
+                    "name": trainName.toLowerCase(),
                     "id": trainId,
                     'fair': fair,
                     "stations": stationList,
                     "distance": distanceList,
                     'start time': timestampStation[0],
+                    'end time': timestampStation[timestampStation.length - 1],
                     "station times": timestampStation,
                     'coaches': numberOfcoaches,
                     'seats per couche': numberOfSeatsPercoache,
@@ -333,18 +334,6 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                     'iteration': 0,
                     'Jiteration': (numberOfcoaches - 1) / 2,
                     'station seats availablity': stationSeatMap,
-                  });
-
-                  await FirebaseFirestore.instance
-                      .collection('trains')
-                      .doc(trainId)
-                      .collection('bookings')
-                      .doc('bookings')
-                      .set({
-                    'passenger': [],
-                    'seats': [],
-                    'age': [],
-                    'gender': []
                   });
                 } on FirebaseException catch (e) {
                   print(e);

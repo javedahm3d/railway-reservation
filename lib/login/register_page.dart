@@ -58,8 +58,6 @@ class _RegisterPageState extends State<RegisterPage> {
               "Phone Number": phoneNumberController.text,
               "age": ageController.text,
               'uid': value.user!.uid,
-              'profile image':
-                  'https://cdna.artstation.com/p/assets/images/images/053/054/138/large/avetetsuya-studios-alien.jpg?1661309922'
             });
           });
           //pop the loading circle

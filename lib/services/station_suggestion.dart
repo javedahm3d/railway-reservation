@@ -11,7 +11,11 @@ class GetStations {
     'vasco',
     'dharwar',
     'banglore',
-    'goa'
+    'goa',
+    'a',
+    'b',
+    'c',
+    'd',
   ];
 
   List<String> getSuggestions(String query) {
