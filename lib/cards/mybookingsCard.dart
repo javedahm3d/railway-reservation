@@ -138,7 +138,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     Text(
-                      '( ${widget.snap['trainId']})',
+                      '( ${widget.snap['TrainId']})',
                       style:
                           TextStyle(fontWeight: FontWeight.w200, fontSize: 15),
                     ),

@@ -74,23 +74,25 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Center(
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AdminHomePage(),
-                ));
-              },
-              child: Text('admin page',
-                  style: GoogleFonts.roboto(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: Colors.black)),
-            ),
-          ),
-        )
+        FirebaseAuth.instance.currentUser!.uid == "Jzbfb9HkJ4YeRGSGNX5VVu9y3Sz1"
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Center(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => AdminHomePage(),
+                      ));
+                    },
+                    child: Text('admin page',
+                        style: GoogleFonts.roboto(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: Colors.black)),
+                  ),
+                ),
+              )
+            : Container()
       ],
     );
   }

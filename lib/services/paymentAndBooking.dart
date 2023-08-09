@@ -490,13 +490,13 @@ class _PaymentPageState extends State<PaymentPage> {
         gender = data?['gender'] ?? [];
         TransactionId = data?['TransactionId'] ?? '';
         seats = data?['seats'] ?? [];
-      });
 
-      passengers = passengers + widget.passengers;
-      TransactionId = TransactionId + [transactionId];
-      age = age + widget.age;
-      gender = gender + widget.gender;
-      seats = seats + allocatedSeats;
+        passengers = passengers + widget.passengers;
+        TransactionId = TransactionId + [transactionId];
+        age = age + widget.age;
+        gender = gender + widget.gender;
+        seats = seats + allocatedSeats;
+      });
 
 //stroring in the trains database
 
@@ -533,7 +533,7 @@ class _PaymentPageState extends State<PaymentPage> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('bookings')
-        .doc(widget.snap['id'])
+        .doc(transactionId)
         .set({
       'TrainId': widget.snap['id'],
       'TransactionId': transactionId,
