@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:railways/components/show_message.dart';
 
 import '../services/station_suggestion.dart';
 
@@ -25,17 +27,22 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
   List<int> distanceList = [];
   List<DateTime?> timestampStation = [];
   Map stationSeatMap = {};
+  List<TextEditingController> controller = [];
 
   void _addStation() {
     setState(() {
+      controller.add(TextEditingController());
       stationList.add('');
       distanceList.add(0);
       timestampStation.add(null);
     });
+
+    print(controller[0].text);
   }
 
   void _removeStation(int index) {
     setState(() {
+      controller.removeAt(index);
       stationList.removeAt(index);
       distanceList.removeAt(index);
       timestampStation.remove(index);
@@ -298,71 +305,95 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
             SizedBox(height: 30),
             InkWell(
               onTap: () async {
+                if (trainName == '') {
+                  ShowMessage()
+                      .showMessage('train name field is empty', context);
+                } else if (trainId == '') {
+                  ShowMessage().showMessage('train id field is empty', context);
+                } else if (numberOfcoaches == 0) {
+                  ShowMessage().showMessage(
+                      'number of coaches must not be nil', context);
+                } else if (numberOfSeatsPercoache == 0) {
+                  ShowMessage().showMessage(
+                      'number of seats per coache must not be nil', context);
+                } else if (numberOfSeatsPercoache % 6 != 0) {
+                  ShowMessage().showMessage(
+                      'number of seats per coache must not be in a multiple of 6',
+                      context);
+                } else if (fair == 0) {
+                  ShowMessage()
+                      .showMessage('prize per km field is empty', context);
+                }
 //adding train logic
 
-                for (int i = 0; i < stationList.length; i++) {
-                  seatsAvailable.add(numberOfSeatsPercoache * numberOfcoaches);
+                else {
+                  for (int i = 0; i < stationList.length; i++) {
+                    seatsAvailable
+                        .add(numberOfSeatsPercoache * numberOfcoaches);
+                  }
+
+                  print(seatsAvailable);
+
+                  for (int i = 1;
+                      i <= numberOfcoaches * numberOfSeatsPercoache;
+                      i++) {
+                    totalSeats.add(i);
+                  }
+
+                  for (int i = 0; i < stationList.length - 1; i++) {
+                    stationSeatMap[stationList[i]] = totalSeats;
+                  }
+
+                  // print(stationSeatMap);
+                  // print(stationList.length);
+
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection('trains')
+                        .doc(trainId)
+                        .set({
+                      "name": trainName.toLowerCase(),
+                      "id": trainId,
+                      'fair': fair,
+                      "stations": stationList,
+                      "distance": distanceList,
+                      'start time': int.parse(
+                          DateFormat('ddMMyy').format(timestampStation[0]!)),
+                      'end time': int.parse(DateFormat('ddMMyy').format(
+                          timestampStation[timestampStation.length - 1]!)),
+                      "station times": timestampStation,
+                      'coaches': numberOfcoaches,
+                      'seats per couche': numberOfSeatsPercoache,
+                      // 'seats available': seatsAvailable,
+                      'iteration': 0,
+                      'Jiteration': (numberOfcoaches - 1) / 2,
+                      'station seats availablity': stationSeatMap,
+                    });
+                  } on FirebaseException catch (e) {
+                    print(e);
+                  }
+
+                  print('submitted');
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Form Submitted'),
+                        content: Text(''),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }
-
-                print(seatsAvailable);
-
-                for (int i = 1;
-                    i <= numberOfcoaches * numberOfSeatsPercoache;
-                    i++) {
-                  totalSeats.add(i);
-                }
-
-                for (int i = 0; i < stationList.length; i++) {
-                  stationSeatMap[stationList[i]] = totalSeats;
-                }
-
-                // print(stationSeatMap);
-                // print(stationList.length);
-
-                try {
-                  await FirebaseFirestore.instance
-                      .collection('trains')
-                      .doc(trainId)
-                      .set({
-                    "name": trainName.toLowerCase(),
-                    "id": trainId,
-                    'fair': fair,
-                    "stations": stationList,
-                    "distance": distanceList,
-                    'start time': timestampStation[0],
-                    'end time': timestampStation[timestampStation.length - 1],
-                    "station times": timestampStation,
-                    'coaches': numberOfcoaches,
-                    'seats per couche': numberOfSeatsPercoache,
-                    // 'seats available': seatsAvailable,
-                    'iteration': 0,
-                    'Jiteration': (numberOfcoaches - 1) / 2,
-                    'station seats availablity': stationSeatMap,
-                  });
-                } on FirebaseException catch (e) {
-                  print(e);
-                }
-
-                print('submitted');
-
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Form Submitted'),
-                      content: Text(''),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                );
               },
               child: Container(
                 width: 300,
@@ -388,7 +419,6 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
   }
 
   myTextAheadField(int index) {
-    // TextEditingController controller = TextEditingController();
     return SizedBox(
       height: 50,
       width: 350,
@@ -408,7 +438,7 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
             )),
         debounceDuration: const Duration(milliseconds: 400),
         textFieldConfiguration: TextFieldConfiguration(
-            // controller: controller,
+            controller: controller[index],
             decoration: InputDecoration(
                 // border: InputBorder,
                 hintText: 'station $index',

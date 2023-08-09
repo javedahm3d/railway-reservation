@@ -247,9 +247,11 @@ class _TrainListPageState extends State<TrainListPage> {
                 stream: FirebaseFirestore.instance
                     .collection('trains')
                     .where(
-                      'stations',
-                      arrayContains: widget.fromstationController.text,
+                      'start time',
+                      isGreaterThanOrEqualTo:
+                          int.parse(DateFormat('ddMMyy').format(widget.date)),
                     )
+
                     // where('sta')
 
                     // where('station')
@@ -283,14 +285,17 @@ class _TrainListPageState extends State<TrainListPage> {
                         var data = snapshot.data!.docs[index].data();
                         print(data);
 
-                        if (data['stations']
-                                .contains(widget.fromstationController.text) &&
-                            data['stations']
-                                .contains(widget.tostationController.text) &&
-                            (data['stations'].indexOf(
-                                    widget.fromstationController.text) <
-                                data['stations'].indexOf(
-                                    widget.tostationController.text))) {
+                        if (data['stations'].contains(
+                                    widget.fromstationController.text) &&
+                                data['stations'].contains(
+                                    widget.tostationController.text) &&
+                                (data['stations'].indexOf(
+                                        widget.fromstationController.text) <
+                                    data['stations'].indexOf(
+                                        widget.tostationController.text))
+                            //         &&
+                            // data['end time'].toDate() > widget.date
+                            ) {
                           // Train list card
 
                           return TrainListCard(
@@ -300,6 +305,13 @@ class _TrainListPageState extends State<TrainListPage> {
                             fromIndex: data['stations']
                                 .indexOf(widget.fromstationController.text),
                           );
+                        } else {
+                          if (snapshot.data!.docs.length == 0) {
+                            return Center(
+                              child: Text('no trains found'),
+                            );
+                          } else
+                            return null;
                         }
                       });
                 }),

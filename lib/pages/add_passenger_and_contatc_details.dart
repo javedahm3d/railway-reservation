@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +42,10 @@ class _PassengerAndContactDeatilsPageState
   void initState() {
     // TODO: implement initState
     super.initState();
-    origialJvalue = widget.snap['Jiteration'];
+    setState(() {
+      origialJvalue = widget.snap['Jiteration'];
+      emailController.text = '${FirebaseAuth.instance.currentUser!.email}';
+    });
   }
 
   void addDetails() {
@@ -92,6 +96,7 @@ class _PassengerAndContactDeatilsPageState
                           itemCount: passengerList.length,
                           itemBuilder: (context, index) {
                             int num = index + 1;
+
                             return Card(
                               child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -102,7 +107,7 @@ class _PassengerAndContactDeatilsPageState
                                         child: TextField(
                                           decoration: InputDecoration(
                                               labelText:
-                                                  'Passenger Name ${index + 1}'),
+                                                  'Passenger Name ${index + 1}*'),
                                           onChanged: (value) {
                                             setState(() {
                                               passengerList[index] = value;
@@ -118,8 +123,8 @@ class _PassengerAndContactDeatilsPageState
                                             FilteringTextInputFormatter
                                                 .digitsOnly
                                           ],
-                                          decoration:
-                                              InputDecoration(labelText: 'Age'),
+                                          decoration: InputDecoration(
+                                              labelText: 'Age*'),
                                           onChanged: (value) {
                                             setState(() {
                                               age[index] = int.parse(value);
@@ -157,7 +162,14 @@ class _PassengerAndContactDeatilsPageState
                     ),
                     SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: addDetails,
+                      onPressed: () {
+                        if (passengerList.length > 5) {
+                          ShowMessage()
+                              .showMessage('max 6 passengers only', context);
+                        } else {
+                          addDetails();
+                        }
+                      },
                       child: Container(
                           width: 120,
                           height: 45,
@@ -214,7 +226,7 @@ class _PassengerAndContactDeatilsPageState
                         ),
                         TextField(
                           controller: emailController,
-                          decoration: InputDecoration(labelText: 'Email Id'),
+                          decoration: InputDecoration(labelText: 'Email Id*'),
                           keyboardType: TextInputType.emailAddress,
                         ),
                         Padding(
@@ -240,6 +252,21 @@ class _PassengerAndContactDeatilsPageState
                   if (passengerList.isEmpty) {
                     ShowMessage().showMessage(
                         'Please add atleast one passenger', context);
+                  } else if (passengerList.contains('')) {
+                    ShowMessage()
+                        .showMessage('Please enter passenger name', context);
+                  } else if (age.contains(0)) {
+                    ShowMessage().showMessage('Please enter age', context);
+                  } else if (age.contains(1) ||
+                      age.contains(2) ||
+                      age.contains(3) ||
+                      age.contains(4) ||
+                      age.contains(5) ||
+                      age.contains(6) ||
+                      age.contains(7)) {
+                    ShowMessage().showMessage(
+                        'passengers below age 8 need not require a ticket please remove it',
+                        context);
                   } else {
                     if (emailController.text.isEmpty) {
                       ShowMessage()

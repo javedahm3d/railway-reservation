@@ -133,6 +133,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         child: CircularProgressIndicator(),
                       );
                     }
+                    if (snapshot.data!.docs.length == 0) {
+                      return Center(
+                        child: Text(
+                            'no train with the entered train id available'),
+                      );
+                    }
 
                     return ListView.builder(
                         itemCount: snapshot.data!.docs.length,

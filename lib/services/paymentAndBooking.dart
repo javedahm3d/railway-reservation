@@ -481,17 +481,24 @@ class _PaymentPageState extends State<PaymentPage> {
     print(snapshot);
 
     if (snapshot.exists) {
+      print('control has snap data');
+
       // Check if the snapshot exists and has data before accessing it
       var data = snapshot.data();
 
       setState(() {
-        passengers = data?['passenger'] ??
-            []; // Use the null-aware operator (??) and provide a default value (empty list) if 'passenger' is null
-        age = data?['age'] ?? [];
-        gender = data?['gender'] ?? [];
-        TransactionId = data?['TransactionId'] ?? '';
-        seats = data?['seats'] ?? [];
+        try {
+          passengers = data!['passenger'] ?? [];
+          age = data['age'] ?? [];
+          gender = data['gender'] ?? [];
+          TransactionId = data['TransactionId'] ?? '';
+          seats = data['seats'] ?? [];
+        } catch (e) {
+          print(e);
+        }
+      });
 
+      setState(() {
         passengers = passengers + widget.passengers;
         TransactionId = TransactionId + [transactionId];
         age = age + widget.age;
@@ -499,7 +506,13 @@ class _PaymentPageState extends State<PaymentPage> {
         seats = seats + allocatedSeats;
       });
 
-//stroring in the trains database
+      print(passengers);
+      print(transactionId);
+      print(age);
+      print(gender);
+      print(seats);
+
+      //stroring in the trains database
 
       await firebaseFirestore
           .collection('trains')
@@ -513,6 +526,7 @@ class _PaymentPageState extends State<PaymentPage> {
         'seats': seats,
       });
     } else {
+      print('control no snap data');
       // Handle the case when the document doesn't exist or has no data
 
       //storing in the trains database
@@ -522,7 +536,7 @@ class _PaymentPageState extends State<PaymentPage> {
           .collection('bookings')
           .doc(widget.snap['stations'][widget.fromIndex])
           .set({
-        'TransactionId': transactionId,
+        'TransactionId': [transactionId],
         'passenger': widget.passengers,
         'age': widget.age,
         'seats': allocatedSeats,

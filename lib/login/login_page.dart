@@ -133,7 +133,9 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return ForgotPassPage();
+                          return ForgotPassPage(
+                            emailController: emailController.text,
+                          );
                         }));
                       },
                       child: Padding(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class EditTrainPage extends StatefulWidget {
   final snap;
@@ -356,7 +357,10 @@ class _EditTrainPageState extends State<EditTrainPage> {
                     'fair': double.parse(fairController.text),
                     "stations": stations,
                     "distance": distance,
-                    'start time': times.elementAt(0),
+                    'start time':
+                        DateFormat('ddMMyy').format(timestampStation[0]),
+                    'end time': DateFormat('ddMMyy')
+                        .format(timestampStation[timestampStation.length - 1]),
                     "station times": times,
                     'coaches': int.parse(numberOfcoachesController.text),
                     'seats per couche':
@@ -367,19 +371,6 @@ class _EditTrainPageState extends State<EditTrainPage> {
                         (int.parse(numberOfcoachesController.text) - 1) / 2,
                     'station seats availablity': stationSeatMap,
                   });
-                  print("hii");
-
-                  // await FirebaseFirestore.instance
-                  //     .collection('trains')
-                  //     .doc(trainId)
-                  //     .collection('bookings')
-                  //     .doc('bookings')
-                  //     .set({
-                  //   'passenger': [],
-                  //   'seats': [],
-                  //   'age': [],
-                  //   'gender': []
-                  // });
                 } on FirebaseException catch (e) {
                   print(e);
                 }

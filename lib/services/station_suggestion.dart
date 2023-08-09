@@ -17,6 +17,7 @@ class GetStations {
     'kota',
     'agra',
     'amritsar',
+    'haveri'
   ];
 
   List<String> getSuggestions(String query) {

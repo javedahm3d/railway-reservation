@@ -6,7 +6,8 @@ import '../components/my_textfield.dart';
 import '../components/show_message.dart';
 
 class ForgotPassPage extends StatefulWidget {
-  const ForgotPassPage({super.key});
+  final emailController;
+  const ForgotPassPage({super.key, this.emailController});
 
   @override
   State<ForgotPassPage> createState() => _ForgotPassPageState();
@@ -14,6 +15,13 @@ class ForgotPassPage extends StatefulWidget {
 
 class _ForgotPassPageState extends State<ForgotPassPage> {
   final _emailController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _emailController.text = widget.emailController;
+  }
 
   @override
   void dispose() {
@@ -115,7 +123,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                   const SizedBox(height: 30),
                   MyButton(
                     onTap: passwordReset,
-                    text: 'Send link',
+                    text: 'send password reset link',
                     color: Colors.blue,
                   ),
                 ]),

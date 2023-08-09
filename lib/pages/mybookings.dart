@@ -32,7 +32,12 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
             );
           }
 
-          print(snapshot.data!.docs.length);
+          // print(snapshot.data!.docs.length);
+          if (snapshot.data!.docs.length == 0) {
+            return Center(
+              child: Text('no bookings were made'),
+            );
+          }
 
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
@@ -40,7 +45,7 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
               // return Text('lol');
               return MybookingsCard(
                 snap: snapshot.data!.docs[index].data(),
-                uid: uid.toString(),
+                uid: uid,
               );
             },
           );

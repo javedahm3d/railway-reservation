@@ -38,6 +38,8 @@ class _MybookingsCardState extends State<MybookingsCard> {
   int distance = 0;
   int seatsPerCoach = 0;
   DateTime time = DateTime.now();
+  Map newMap = {};
+  List<dynamic> stations = [];
 
   // @override
   void initState() {
@@ -49,12 +51,18 @@ class _MybookingsCardState extends State<MybookingsCard> {
   // fetch data from train dataset
   getdata() async {
     print('controller 01');
-    print(widget.snap['trainId']);
+    // print(widget.snap['TrainId']);
 
-    snap = await FirebaseFirestore.instance
-        .collection('trains')
-        .doc(widget.snap['TrainId'])
-        .get();
+    try {
+      snap = await FirebaseFirestore.instance
+          .collection('trains')
+          .doc(widget.snap['TrainId'])
+          .get();
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+
+    print(snap);
 
     print('controller 01');
 
@@ -78,6 +86,18 @@ class _MybookingsCardState extends State<MybookingsCard> {
           snap.data()!['distance'][widget.snap['from station index']];
 
       seatsPerCoach = snap.data()!['seats per couche'];
+
+      newMap = snap.data()!['station seats availablity'];
+
+      stations = snap.data()!['stations'];
+
+      for (int i = widget.snap['from station index'];
+          i < widget.snap['to station index'];
+          i++) {
+        for (int j = 0; j < widget.snap['seats'].length; j++) {
+          newMap[snap.data()!['stations'][i]].add(widget.snap['seats'][j]);
+        }
+      }
     });
 
     print(trainame);
@@ -145,7 +165,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
                 child: Row(
                   children: [
                     Text(
-                      trainame,
+                      trainame.toUpperCase(),
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
@@ -208,8 +228,8 @@ class _MybookingsCardState extends State<MybookingsCard> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    trainListInfoCard(
-                        'amount paid', widget.snap['amount'].toString()),
+                    trainListInfoCard('amount paid',
+                        int.parse(widget.snap['amount'].toString()).toString()),
                     SizedBox(
                       width: 50,
                     ),
@@ -250,13 +270,17 @@ class _MybookingsCardState extends State<MybookingsCard> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => MyBookingsDetailsPage(
-                                snap: widget.snap,
-                                trainName: trainame,
-                                fromStationName: fromStationName,
-                                toStationName: toStationName,
-                                fromTime: fromTime,
-                                toTime: toTime,
-                                distance: distance),
+                              snap: widget.snap,
+                              trainName: trainame,
+                              fromStationName: fromStationName,
+                              toStationName: toStationName,
+                              fromTime: fromTime,
+                              toTime: toTime,
+                              distance: distance,
+                              uid: widget.uid,
+                              newMap: newMap,
+                              stations: stations,
+                            ),
                           ));
                         },
                         child: Card(
@@ -269,7 +293,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
                                 color: Colors.blue,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
-                                child: Text('view details',
+                                child: Text('View Details',
                                     style: TextStyle(fontSize: 17))),
                           ),
                         ),

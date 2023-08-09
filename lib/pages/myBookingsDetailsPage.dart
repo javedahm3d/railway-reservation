@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:railways/cards/mybookingsCard.dart';
 import 'package:railways/components/my_appbar.dart';
+import 'package:railways/pages/mybookings.dart';
 
 class MyBookingsDetailsPage extends StatefulWidget {
   final snap;
@@ -11,6 +14,9 @@ class MyBookingsDetailsPage extends StatefulWidget {
   final fromTime;
   final toTime;
   final distance;
+  final uid;
+  final Map newMap;
+  final stations;
 
   const MyBookingsDetailsPage(
       {super.key,
@@ -20,7 +26,10 @@ class MyBookingsDetailsPage extends StatefulWidget {
       required this.toStationName,
       required this.fromTime,
       required this.toTime,
-      required this.distance});
+      required this.distance,
+      required this.uid,
+      required this.newMap,
+      required this.stations});
 
   @override
   State<MyBookingsDetailsPage> createState() => _MyBookingsDetailsPageState();
@@ -108,25 +117,121 @@ class _MyBookingsDetailsPageState extends State<MyBookingsDetailsPage> {
                         },
                       ),
                     ),
-                    // InkWell(
-                    //   onTap: () {
 
-                    //   },
-                    //   child: Container(
-                    //     width: 170,
-                    //     height: 50,
-                    //     decoration: BoxDecoration(
-                    //         color: Colors.orange,
-                    //         borderRadius: BorderRadius.circular(20)),
-                    //     child: Center(
-                    //       child: Text(
-                    //         'Download Ticket',
-                    //         style: TextStyle(
-                    //             fontSize: 18, fontWeight: FontWeight.w800),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    // cancel booking button
+                    InkWell(
+                      onTap: () {
+                        bool confirmed = false;
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Are you sure?'),
+                              content: Text(
+                                  'Your refund will be done within 4-5 working days.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () async {
+                                    bool isLoading = true;
+
+                                    // Close the dialog
+                                    Navigator.of(context)
+                                      ..pop()
+                                      ..pop();
+
+                                    if (isLoading) {
+                                      LinearProgressIndicator();
+                                    }
+
+                                    // Perform data operations
+                                    try {
+                                      await FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(widget.uid)
+                                          .collection('bookings')
+                                          .doc(widget.snap['TransactionId'])
+                                          .delete();
+
+                                      await FirebaseFirestore.instance
+                                          .collection('trains')
+                                          .doc(widget.snap['TrainId'])
+                                          .update({
+                                        'station seats availablity':
+                                            widget.newMap,
+                                      });
+
+                                      var snap1 = await FirebaseFirestore
+                                          .instance
+                                          .collection('trains')
+                                          .doc(widget.snap['TrainId'])
+                                          .collection('bookings')
+                                          .doc(widget.stations[widget
+                                                  .snap['from station index']]
+                                              .toString())
+                                          .get();
+
+                                      List<String> transaction = [];
+                                      List<String> passenger = [];
+                                      List<int> seats = [];
+                                      List<int> age = [];
+                                      setState(() {
+                                        transaction =
+                                            snap1.data()!['TransactionId'];
+                                        passenger = snap1.data()!['passenger'];
+                                        seats = snap1.data()!['seats'];
+                                        age = snap1.data()!['age'];
+
+                                        transaction = transaction +
+                                            widget.snap['TransactionId'];
+                                        passenger = passenger +
+                                            widget.snap['passenger'];
+                                        seats = seats + widget.snap['seats'];
+                                        age = age + widget.snap['age'];
+                                      });
+
+                                      await FirebaseFirestore.instance
+                                          .collection('trains')
+                                          .doc(widget.snap['TrainId'])
+                                          .collection('bookings')
+                                          .doc(widget.stations[widget
+                                                  .snap['from station index']]
+                                              .toString())
+                                          .update({
+                                        'TransactionId': transaction,
+                                        'passenger': passenger,
+                                        'age': age,
+                                        'seats': seats,
+                                      });
+                                      Navigator.of(context).pop();
+                                    } catch (e) {
+                                      print(e);
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        width: 170,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.orange,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: Text(
+                            'Cancel Booking',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     )

@@ -164,7 +164,9 @@ class _TrainListCardState extends State<TrainListCard> {
                       child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ViewTrainRoute(),
+                            builder: (context) => ViewTrainRoute(
+                              snap: widget.snap,
+                            ),
                           ));
                         },
                         child: Card(
