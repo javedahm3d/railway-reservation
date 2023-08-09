@@ -36,6 +36,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
   String fromTime = '';
   String toTime = '';
   int distance = 0;
+  int seatsPerCoach = 0;
   DateTime time = DateTime.now();
 
   // @override
@@ -75,6 +76,8 @@ class _MybookingsCardState extends State<MybookingsCard> {
       toTime = DateFormat('MMM d, h:mm a').format(time);
       distance = snap.data()!['distance'][widget.snap['to station index']] -
           snap.data()!['distance'][widget.snap['from station index']];
+
+      seatsPerCoach = snap.data()!['seats per couche'];
     });
 
     print(trainame);
@@ -83,6 +86,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
     print(fromTime);
     print(toTime);
     print(distance);
+    print(seatsPerCoach);
   }
 
   //pdf ticket generator
@@ -92,9 +96,17 @@ class _MybookingsCardState extends State<MybookingsCard> {
     print('download pressed');
 
     for (int i = 0; i < widget.snap['passenger'].length; i++) {
+      int selectedCoach = widget.snap['seats'][i] ~/ seatsPerCoach + 1;
+      int seatNumber =
+          widget.snap['seats'][i] - (selectedCoach - 1) * seatsPerCoach;
+
+      // print('selected coach details');
+      // print(selectedCoach);
+      // print(seatNumber);
+
       passengers.add(Passenger(
         name: '${widget.snap['passenger'][i]}',
-        seatNo: '${widget.snap['seats'][i]}',
+        seatNo: '$seatNumber (coach  $selectedCoach)',
       ));
     }
     final TicketData ticketData = TicketData(
@@ -257,7 +269,7 @@ class _MybookingsCardState extends State<MybookingsCard> {
                                 color: Colors.blue,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
-                                child: Text('view deatils',
+                                child: Text('view details',
                                     style: TextStyle(fontSize: 17))),
                           ),
                         ),

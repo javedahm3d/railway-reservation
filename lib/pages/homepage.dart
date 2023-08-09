@@ -210,9 +210,7 @@ class _HomePageState extends State<HomePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                SearchMenuOption('Search By Staions', 1),
-                                SearchMenuOption('Search By Train Name', 2),
-                                SearchMenuOption('Search By Train Id', 3),
+                                SearchMenuOption('Search By Stations', 1),
                               ],
                             ),
                           ),

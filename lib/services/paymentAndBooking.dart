@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:railways/pages/mybookings.dart';
 import 'package:razorpay_web/razorpay_web.dart';
 
 import '../components/show_message.dart';
@@ -545,5 +546,13 @@ class _PaymentPageState extends State<PaymentPage> {
       'from station index': widget.fromIndex,
       'to station index': widget.toIndex
     });
+
+    Navigator.of(context)
+      ..pop()
+      ..pop()
+      ..pop();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => MyBookingsPage(),
+    ));
   }
 }
