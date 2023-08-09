@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:railways/admin_pages/edit_train_details.dart';
 import 'package:railways/cards/train_list_info_card.dart';
 import 'package:railways/pages/add_passenger_and_contatc_details.dart';
 import 'package:railways/pages/view_route.dart';
@@ -139,7 +140,12 @@ class _AdminTrainListCardState extends State<AdminTrainListCard> {
                     Padding(
                       padding: const EdgeInsets.only(top: 30, left: 5),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                EditTrainPage(snap: widget.snap),
+                          ));
+                        },
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
