@@ -1,7 +1,7 @@
 class GetStations {
   final List<String> stations = [
     'kochi',
-    'manglore',
+    'mangalore',
     'margao',
     'pune',
     'mumbai',
@@ -10,9 +10,9 @@ class GetStations {
     'delhi',
     'vasco',
     'dharwar',
-    'banglore',
+    'bangalore',
     'goa',
-    'jaipur',
+    'surat',
     'belgaum',
     'kota',
     'agra',
