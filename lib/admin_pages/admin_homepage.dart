@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:railways/admin_pages/add_train_details_page.dart';
+import 'package:railways/admin_pages/refund.dart';
 import 'package:railways/cards/admin_train_card.dart';
 import 'package:railways/components/my_appbar.dart';
 import 'package:railways/pages/homepage.dart';
@@ -169,7 +170,54 @@ class _AdminHomePageState extends State<AdminHomePage> {
           ),
         ),
 
-        drawer: Drawer(),
+        drawer: Drawer(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  )),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.logout,
+                      size: 40,
+                    ),
+                    title: Text(
+                      'User Dashboard',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade800),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => RefundsPage(),
+                  )),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.money,
+                      size: 40,
+                    ),
+                    title: Text(
+                      'Refunds',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade800),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

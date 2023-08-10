@@ -139,12 +139,18 @@ class _MyBookingsDetailsPageState extends State<MyBookingsDetailsPage> {
                                       ..pop()
                                       ..pop();
 
-                                    if (isLoading) {
-                                      LinearProgressIndicator();
-                                    }
-
                                     // Perform data operations
                                     try {
+                                      await FirebaseFirestore.instance
+                                          .collection('refund')
+                                          .doc(widget.snap['TransactionId'])
+                                          .set({
+                                        'uid': widget.uid,
+                                        'transaction id':
+                                            widget.snap['TransactionId'],
+                                        'amount': widget.snap['amount']
+                                      });
+
                                       await FirebaseFirestore.instance
                                           .collection('users')
                                           .doc(widget.uid)

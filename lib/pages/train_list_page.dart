@@ -251,6 +251,7 @@ class _TrainListPageState extends State<TrainListPage> {
                       isGreaterThanOrEqualTo:
                           int.parse(DateFormat('ddMMyy').format(widget.date)),
                     )
+                    .orderBy('start time', descending: false)
 
                     // where('sta')
 

@@ -31,7 +31,14 @@ class _ViewTrainRouteState extends State<ViewTrainRoute> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Train Name route Details'),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      '${widget.snap['name'].toString().toUpperCase()}  Route Details ',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(15),
                     child: Table(
@@ -120,7 +127,8 @@ class _ViewTrainRouteState extends State<ViewTrainRoute> {
                                 width: 250,
                                 child: Center(
                                     child: Text(
-                                  widget.snap['distance'][index].toString(),
+                                  widget.snap['distance'][index].toString() +
+                                      ' km',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 24),
