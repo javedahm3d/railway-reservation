@@ -182,7 +182,7 @@ class _AddNewTrainPageState extends State<AddNewTrainPage> {
                           FilteringTextInputFormatter.digitsOnly
                         ],
                         decoration: InputDecoration(
-                            labelText: 'Number of seats per coache'),
+                            labelText: 'Number of seats per coach'),
                         onChanged: (value) {
                           setState(() {
                             numberOfSeatsPercoache = int.parse(value);
